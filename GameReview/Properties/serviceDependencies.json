@@ -4,6 +4,10 @@
       "type": "mssql",
       "connectionId": "ConnectionStrings:GameReview",
       "dynamicId": null
+    },
+    "secrets1": {
+      "type": "secrets",
+      "dynamicId": null
     }
   }
 }

@@ -13,15 +13,15 @@ public class UserController(UserService service) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> PostUser(InUserDTO dto)
     {
-        try
-        {
-            await _service.CreateUser(dto);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500);
-        }
+        await _service.CreateUser(dto);
+        return Ok();
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(InLoginDTO dto)
+    {
+        var token = await _service.Login(dto);
+
+        return Ok(token);
     }
 }

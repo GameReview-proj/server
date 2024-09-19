@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var sqlServerConnectionString = builder.Configuration.GetSection("ConnectionStrings:GameReview").Value;
+var sqlServerConnectionString = builder.Configuration["ConnectionStrings:GameReview"];
 
 builder.Services.AddDbContext<UserContext>(opts =>
 {
@@ -18,6 +18,7 @@ builder.Services.AddDbContext<UserContext>(opts =>
 });
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TokenService>();
 
 builder.Services
     .AddIdentity<User, IdentityRole>()
