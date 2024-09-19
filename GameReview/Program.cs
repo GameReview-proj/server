@@ -1,22 +1,38 @@
+using GameReview.Data;
+using GameReview.Models;
+using GameReview.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var sqlServerConnectionString = builder.Configuration.GetSection("ConnectionStrings:GameReview").Value;
+
+builder.Services.AddDbContext<UserContext>(opts =>
+{
+    opts.UseSqlServer(sqlServerConnectionString);
+});
+
+builder.Services.AddScoped<UserService>();
+
+builder.Services
+    .AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<UserContext>()
+    .AddDefaultTokenProviders();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

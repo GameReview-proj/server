@@ -1,17 +1,27 @@
-﻿using GameReview.Controllers.DTOs;
+﻿using GameReview.Data.DTOs.User;
+using GameReview.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameReview.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController
+public class UserController(UserService service) : ControllerBase
 {
+    private readonly UserService _service = service;
+
     [HttpPost]
-    public IActionResult PostUser([FromBody] InUserDTO dto)
+    public async Task<IActionResult> PostUser(InUserDTO dto)
     {
-
-
-        return null;
+        try
+        {
+            await _service.CreateUser(dto);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500);
+        }
     }
 }

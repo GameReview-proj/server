@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GameReview.Controllers.DTOs;
+namespace GameReview.Data.DTOs.User;
 
 public record InUserDTO(
     [Required]

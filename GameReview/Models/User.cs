@@ -1,7 +1,11 @@
-﻿namespace GameReview.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace GameReview.Models;
+
+public class User : IdentityUser
 {
-    private string Picture { get; set; }
-    private string SteamId { get; set; }
+    public string? Picture { get; set; }
+    public string? SteamId { get; set; }
+
+    public User() : base() { }
 }
