@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameReview.Migrations
 {
-    [DbContext(typeof(UserContext))]
+    [DbContext(typeof(DatabaseContext))]
     [Migration("20240919153742_Turning fields nullable Picture SteamId")]
     partial class TurningfieldsnullablePictureSteamId
     {

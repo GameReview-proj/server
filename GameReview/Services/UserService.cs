@@ -8,12 +8,12 @@ namespace GameReview.Services;
 
 public class UserService(UserManager<User> userManager,
     SignInManager<User> signInManager,
-    UserContext context,
+    DatabaseContext context,
     TokenService tokenService)
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly SignInManager<User> _signInManager = signInManager;
-    private readonly UserContext _context = context;
+    private readonly DatabaseContext _context = context;
     private readonly TokenService _tokenService = tokenService;
 
     public async Task<User> CreateUser(InUserDTO dto)

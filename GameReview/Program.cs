@@ -12,17 +12,18 @@ builder.Services.AddSwaggerGen();
 
 var sqlServerConnectionString = builder.Configuration["ConnectionStrings:GameReview"];
 
-builder.Services.AddDbContext<UserContext>(opts =>
+builder.Services.AddDbContext<DatabaseContext>(opts =>
 {
     opts.UseSqlServer(sqlServerConnectionString);
 });
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<TokenService>();
 
 builder.Services
     .AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<UserContext>()
+    .AddEntityFrameworkStores<DatabaseContext>()
     .AddDefaultTokenProviders();
 
 var app = builder.Build();
