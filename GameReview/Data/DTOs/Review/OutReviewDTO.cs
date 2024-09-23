@@ -2,5 +2,6 @@
 public record OutReviewDTO(int Id,
     int Stars,
     string? Description,
-    string ExternalId)
+    string ExternalId,
+    DateTime CreatedDate)
 { }

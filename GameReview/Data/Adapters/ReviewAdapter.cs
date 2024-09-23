@@ -12,7 +12,8 @@ public static class ReviewAdapter
             Description = dto.Description,
             Stars = dto.Stars,
             ExternalId = dto.ExternalId,
-            User = user
+            User = user,
+            CreatedDate = DateTime.Now
         };
     }
 
@@ -21,7 +22,8 @@ public static class ReviewAdapter
         return new(review.Id,
             review.Stars,
             review.Description,
-            review.ExternalId
+            review.ExternalId,
+            review.CreatedDate
         );
     }
 
@@ -31,6 +33,7 @@ public static class ReviewAdapter
             review.Stars,
             review.Description,
             review.ExternalId,
+            review.CreatedDate,
             UserAdapter.ToDTO(review.User)
         );
     }

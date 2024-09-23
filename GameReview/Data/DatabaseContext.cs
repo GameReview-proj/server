@@ -9,4 +9,5 @@ public class DatabaseContext : IdentityDbContext<User>
     public DatabaseContext(DbContextOptions opts) : base(opts) { }
 
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<Commentary> Commentaries { get; set; }
 }

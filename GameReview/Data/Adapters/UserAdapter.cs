@@ -11,7 +11,8 @@ public static class UserAdapter
         return new()
         {
             Email = dto.Email,
-            UserName = dto.Username
+            UserName = dto.Username,
+            CreatedDate = DateTime.Now
         };
     }
 

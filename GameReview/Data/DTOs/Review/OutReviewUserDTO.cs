@@ -7,6 +7,7 @@ public record OutReviewUserDTO(
         int Stars,
         string? Description,
         string ExternalId,
+        DateTime CreatedDate,
         OutUserDTO User
     )
 { }
