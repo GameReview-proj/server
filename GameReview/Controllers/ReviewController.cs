@@ -30,10 +30,10 @@ public class ReviewController(ReviewService service) : ControllerBase
         return Ok(ReviewAdapter.ToReviewUserDTO(reviewFound));
     }
 
-    [HttpGet("user/{userId}")]
-    public IActionResult GetReviewsByUserId(string userId)
+    [HttpGet]
+    public IActionResult GetByUserIdExternalId([FromQuery] string? userId, [FromQuery] string? externalId)
     {
-        var reviewsFound = _service.GetByUserId(userId);
+        var reviewsFound = _service.GetByUserIdExternalId(userId, externalId);
 
         var reviewsDTOs = reviewsFound.Select(ReviewAdapter.ToReviewDTO).ToList();
 

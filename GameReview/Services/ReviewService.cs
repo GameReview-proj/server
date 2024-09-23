@@ -31,10 +31,13 @@ public class ReviewService(DatabaseContext context)
             ?? throw new ApplicationException($"Erro ao buscar review com id: {id}");
     }
 
-    public IEnumerable<Review> GetByUserId(string userId)
+    public IEnumerable<Review> GetByUserIdExternalId(string? userId, string? externalId)
     {
-        return _context
-            .Reviews
-            .Where(r => r.User.Id.Equals(userId));
+        var reviewsFound = _context.Reviews.Where(r =>
+            (string.IsNullOrEmpty(userId) || r.User.Id == userId) &&
+            (string.IsNullOrEmpty(externalId) || r.ExternalId == externalId));
+
+        return [.. reviewsFound];
+
     }
 }
