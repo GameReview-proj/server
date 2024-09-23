@@ -13,7 +13,7 @@ public class ReviewService(DatabaseContext context)
         var userFound = _context
                 .Users
                 .FirstOrDefault(u => u.Id.Equals(dto.UserId))
-        ?? throw new ApplicationException("Erro ao buscar usuário com id: " + dto.UserId);
+        ?? throw new ApplicationException($"Erro ao buscar usuário com id: {dto.UserId}");
 
         Review newReview = ReviewAdapter.ToEntity(dto, userFound);
 
@@ -21,5 +21,15 @@ public class ReviewService(DatabaseContext context)
         _context.SaveChanges();
 
         return newReview;
+    }
+
+    public Review GetById(int id)
+    {
+        Console.WriteLine(id);
+
+        return _context
+            .Reviews
+            .FirstOrDefault(r => r.Id.Equals(id))
+            ?? throw new ApplicationException($"Erro ao buscar review com id: {id}");
     }
 }
