@@ -1,4 +1,6 @@
-﻿using GameReview.Data.DTOs.Review;
+﻿using GameReview.Data.Adapters;
+using GameReview.Data.DTOs.Review;
+using GameReview.Models;
 using GameReview.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +27,16 @@ public class ReviewController(ReviewService service) : ControllerBase
     {
         var reviewFound = _service.GetById(id);
 
-        return Ok(reviewFound);
+        return Ok(ReviewAdapter.ToReviewUserDTO(reviewFound));
     }
 
+    [HttpGet("user/{userId}")]
+    public IActionResult GetReviewsByUserId(string userId)
+    {
+        var reviewsFound = _service.GetByUserId(userId);
+
+        var reviewsDTOs = reviewsFound.Select(ReviewAdapter.ToReviewDTO).ToList();
+
+        return Ok(reviewsDTOs);
+    }
 }

@@ -25,11 +25,16 @@ public class ReviewService(DatabaseContext context)
 
     public Review GetById(int id)
     {
-        Console.WriteLine(id);
-
         return _context
             .Reviews
             .FirstOrDefault(r => r.Id.Equals(id))
             ?? throw new ApplicationException($"Erro ao buscar review com id: {id}");
+    }
+
+    public IEnumerable<Review> GetByUserId(string userId)
+    {
+        return _context
+            .Reviews
+            .Where(r => r.User.Id.Equals(userId));
     }
 }

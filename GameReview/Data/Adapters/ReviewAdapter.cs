@@ -15,4 +15,23 @@ public static class ReviewAdapter
             User = user
         };
     }
+
+    public static OutReviewDTO ToReviewDTO(Review review)
+    {
+        return new(review.Id,
+            review.Stars,
+            review.Description,
+            review.ExternalId
+        );
+    }
+
+    public static OutReviewUserDTO ToReviewUserDTO(Review review)
+    {
+        return new(review.Id,
+            review.Stars,
+            review.Description,
+            review.ExternalId,
+            UserAdapter.ToDTO(review.User)
+        );
+    }
 }

@@ -14,7 +14,9 @@ var sqlServerConnectionString = builder.Configuration["ConnectionStrings:GameRev
 
 builder.Services.AddDbContext<DatabaseContext>(opts =>
 {
-    opts.UseSqlServer(sqlServerConnectionString);
+    opts
+        .UseSqlServer(sqlServerConnectionString)
+        .UseLazyLoadingProxies();
 });
 
 builder.Services.AddScoped<UserService>();
