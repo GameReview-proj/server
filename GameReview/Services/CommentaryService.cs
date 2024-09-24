@@ -48,4 +48,17 @@ public class CommentaryService(DatabaseContext context)
 
         return newCommentary;
     }
+
+    public IEnumerable<Commentary> GetByReviewIdExternalIdUserId(int? reviewId, string? externalId, string? userId)
+    {
+        var commentariesFound = _context
+            .Commentaries
+            .Where(r =>
+                (!reviewId.HasValue || r.Review.Id.Equals(reviewId)) &&
+                (string.IsNullOrEmpty(externalId) || r.Review.ExternalId.Equals(externalId) &&
+                (string.IsNullOrEmpty(userId) || r.User.Id.Equals(userId)))
+            );
+
+        return [.. commentariesFound];
+    }
 }

@@ -6,7 +6,6 @@ namespace GameReview.Data.Adapters;
 
 public static class CommentaryAdapter
 {
-
     public static Commentary ToEntity(InCommentaryDTO dto, User user, Commentary? commentary, Review? review)
     {
         if (commentary != null && review != null)
@@ -20,5 +19,14 @@ public static class CommentaryAdapter
             Review = review,
             CreatedDate = DateTime.Now
         };
+    }
+
+    public static OutCommentaryDTO ToCommentaryDTO(Commentary commentary)
+    {
+        return new(
+            commentary.Id,
+            commentary.Comment,
+            commentary.CreatedDate
+        );
     }
 }
