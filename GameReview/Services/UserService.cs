@@ -2,6 +2,7 @@
 using GameReview.Data.Adapters;
 using GameReview.Data.DTOs.User;
 using GameReview.Models;
+using GameReview.Services.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace GameReview.Services;
@@ -18,6 +19,9 @@ public class UserService(UserManager<User> userManager,
 
     public async Task<User> CreateUser(InUserDTO dto)
     {
+        if (_context.Users.Any(u => u.Email.Equals(dto.Email)))
+            throw new ConflictException($"Usuário com email {dto.Email} já existente");
+
         var newUser = UserAdapter.ToEntity(dto);
 
         IdentityResult result = await _userManager.CreateAsync(newUser, dto.Password);
@@ -33,7 +37,7 @@ public class UserService(UserManager<User> userManager,
             .UserManager
             .Users
             .FirstOrDefault(u => u.UserName.Equals(dto.Login) || u.Email.Equals(dto.Login))
-            ?? throw new ApplicationException("Usuário não encontrado");
+            ?? throw new NotFoundException("Usuário não encontrado");
 
         var result = await _signInManager.PasswordSignInAsync(userFound, dto.Password, false, false);
 

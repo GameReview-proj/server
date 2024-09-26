@@ -2,6 +2,7 @@
 using GameReview.Data.Adapters;
 using GameReview.Data.DTOs.Review;
 using GameReview.Models;
+using GameReview.Services.Exceptions;
 
 namespace GameReview.Services;
 
@@ -13,7 +14,7 @@ public class ReviewService(DatabaseContext context)
         var userFound = _context
                 .Users
                 .FirstOrDefault(u => u.Id.Equals(dto.UserId))
-        ?? throw new ApplicationException($"Erro ao buscar usuário com id: {dto.UserId}");
+        ?? throw new NotFoundException($"Usuário não encontrado com o id: {dto.UserId}");
 
         Review newReview = ReviewAdapter.ToEntity(dto, userFound);
 
@@ -28,7 +29,7 @@ public class ReviewService(DatabaseContext context)
         return _context
             .Reviews
             .FirstOrDefault(r => r.Id.Equals(id))
-            ?? throw new ApplicationException($"Erro ao buscar review com id: {id}");
+            ?? throw new NotFoundException($"Review não encontrado com id: {id}");
     }
 
     public IEnumerable<Review> GetByUserIdExternalId(string? userId, string? externalId)
@@ -38,6 +39,5 @@ public class ReviewService(DatabaseContext context)
             (string.IsNullOrEmpty(externalId) || r.ExternalId == externalId));
 
         return [.. reviewsFound];
-
     }
 }

@@ -1,6 +1,7 @@
 using GameReview.Data;
 using GameReview.Models;
 using GameReview.Services;
+using GameReview.Services.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +11,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var sqlServerConnectionString = builder.Configuration["ConnectionStrings:GameReview"];
+builder.Services.AddControllers(opts =>
+{
+    opts.Filters.Add(new GlobalExceptionFilter());
+});
 
+var sqlServerConnectionString = builder.Configuration["ConnectionStrings:GameReview"];
 builder.Services.AddDbContext<DatabaseContext>(opts =>
 {
     opts
