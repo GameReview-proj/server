@@ -19,6 +19,9 @@ public class UserService(UserManager<User> userManager,
 
     public async Task<User> CreateUser(InUserDTO dto)
     {
+        if (_context.Users.Any(u => u.Email.Equals(dto.Email)))
+            throw new ConflictException($"Usuário com email {dto.Email} já existente");
+
         var newUser = UserAdapter.ToEntity(dto);
 
         IdentityResult result = await _userManager.CreateAsync(newUser, dto.Password);
