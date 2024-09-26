@@ -1,6 +1,7 @@
 ﻿
 using GameReview.Data.DTOs.Commentary;
 using GameReview.Models;
+using GameReview.Services.Exceptions;
 
 namespace GameReview.Data.Adapters;
 
@@ -9,7 +10,7 @@ public static class CommentaryAdapter
     public static Commentary ToEntity(InCommentaryDTO dto, User user, Commentary? commentary, Review? review)
     {
         if (commentary != null && review != null)
-            throw new ApplicationException("Um comentário só pode ser atribuído a uma avaliação OU comentário");
+            throw new BadRequestException("Um comentário só pode ser atribuído a uma avaliação OU comentário");
 
         return new()
         {

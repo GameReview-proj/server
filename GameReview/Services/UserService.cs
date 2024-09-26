@@ -2,6 +2,7 @@
 using GameReview.Data.Adapters;
 using GameReview.Data.DTOs.User;
 using GameReview.Models;
+using GameReview.Services.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace GameReview.Services;
@@ -33,7 +34,7 @@ public class UserService(UserManager<User> userManager,
             .UserManager
             .Users
             .FirstOrDefault(u => u.UserName.Equals(dto.Login) || u.Email.Equals(dto.Login))
-            ?? throw new ApplicationException("Usuário não encontrado");
+            ?? throw new NotFoundException("Usuário não encontrado");
 
         var result = await _signInManager.PasswordSignInAsync(userFound, dto.Password, false, false);
 
