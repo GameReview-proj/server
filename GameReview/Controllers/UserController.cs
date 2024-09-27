@@ -24,4 +24,12 @@ public class UserController(UserService service) : ControllerBase
 
         return Ok(token);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateUser(InPutUserDTO dto, string id)
+    {
+        _service.UpdateUser(dto, id);
+
+        return Ok();
+    }
 }

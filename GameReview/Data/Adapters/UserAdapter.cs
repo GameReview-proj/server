@@ -23,4 +23,12 @@ public static class UserAdapter
             user.Email
         );
     }
+
+    public static User Update(InPutUserDTO dto, User user)
+    {
+        if (!string.IsNullOrEmpty(dto.Email) && !user.Email.Equals(dto.Email)) user.Email = dto.Email;
+        if (!string.IsNullOrEmpty(dto.Username) && !user.UserName.Equals(dto.Username)) user.UserName = dto.Username;
+
+        return user;
+    }
 }
