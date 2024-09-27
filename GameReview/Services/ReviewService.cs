@@ -40,4 +40,15 @@ public class ReviewService(DatabaseContext context)
 
         return [.. reviewsFound];
     }
+
+    public void DeleteById(int id)
+    {
+        var reviewFound = _context.Reviews.FirstOrDefault(r =>
+        r.Id.Equals(id))
+            ?? throw new NotFoundException($"Review não encontrada com o id: {id}");
+
+        reviewFound.Commentaries.Clear();
+        _context.Reviews.Remove(reviewFound);
+        _context.SaveChanges();
+    }
 }

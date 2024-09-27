@@ -39,4 +39,12 @@ public class ReviewController(ReviewService service) : ControllerBase
 
         return Ok(reviewsDTOs);
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteById(int id)
+    {
+        _service.DeleteById(id);
+
+        return NoContent();
+    }
 }

@@ -47,4 +47,14 @@ public class UserService(UserManager<User> userManager,
 
         return token;
     }
+
+    public User UpdateUser(InPutUserDTO dto, string id)
+    {
+        var userFound = _context.Users.FirstOrDefault(r => r.Id.Equals(id)) ?? throw new NotFoundException($"Usuário não encontrado com o id: {id}");
+
+        UserAdapter.Update(dto, userFound);
+        _context.SaveChanges();
+
+        return userFound;
+    }
 }
