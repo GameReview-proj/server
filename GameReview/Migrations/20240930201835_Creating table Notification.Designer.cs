@@ -4,6 +4,7 @@ using GameReview.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameReview.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20240930201835_Creating table Notification")]
+    partial class CreatingtableNotification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,15 +108,10 @@ namespace GameReview.Migrations
                     b.Property<int?>("FollowId")
                         .HasColumnType("int");
 
-                    b.Property<string>("RelatedUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("ReviewId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -121,8 +119,6 @@ namespace GameReview.Migrations
                     b.HasIndex("CommentaryId");
 
                     b.HasIndex("FollowId");
-
-                    b.HasIndex("RelatedUserId");
 
                     b.HasIndex("ReviewId");
 
@@ -419,27 +415,17 @@ namespace GameReview.Migrations
                         .WithMany("Notifications")
                         .HasForeignKey("FollowId");
 
-                    b.HasOne("GameReview.Models.User", "RelatedUser")
-                        .WithMany("RelatedNotifications")
-                        .HasForeignKey("RelatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("GameReview.Models.Review", "Review")
                         .WithMany("Notifications")
                         .HasForeignKey("ReviewId");
 
                     b.HasOne("GameReview.Models.User", "User")
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Commentary");
 
                     b.Navigation("Follow");
-
-                    b.Navigation("RelatedUser");
 
                     b.Navigation("Review");
 
@@ -530,8 +516,6 @@ namespace GameReview.Migrations
                     b.Navigation("Following");
 
                     b.Navigation("Notifications");
-
-                    b.Navigation("RelatedNotifications");
 
                     b.Navigation("Reviews");
                 });
