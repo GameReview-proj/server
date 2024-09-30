@@ -11,4 +11,5 @@ public class Follow
     public virtual User? Follower { get; set; }
     public string FollowingId { get; set; }
     public virtual User? Following { get; set; }
+    public virtual List<Notification> Notifications { get; set; } = [];
 }
