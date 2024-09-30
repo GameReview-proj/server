@@ -25,6 +25,16 @@ public class DatabaseContext : IdentityDbContext<User>
             .WithMany(u => u.Following)
             .HasForeignKey("FollowingId");
 
+        builder.Entity<Notification>()
+            .HasOne(n => n.RelatedUser)
+            .WithMany(u => u.RelatedNotifications)
+            .HasForeignKey("RelatedUserId");
+
+        builder.Entity<Notification>()
+            .HasOne(n => n.User)
+            .WithMany(u => u.Notifications)
+            .HasForeignKey("UserId");
+
         base.OnModelCreating(builder);
     }
 }
