@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Diagnostics;
 
 namespace GameReview.Services.Exceptions;
 
@@ -15,6 +14,8 @@ public class GlobalExceptionFilter : IExceptionFilter
             ConflictException => StatusCodes.Status409Conflict,
             _ => StatusCodes.Status500InternalServerError
         };
+
+        Console.WriteLine($"Exception {DateTime.Now} ({context.Exception.Message}) - {context.Exception.StackTrace}");
 
         context.Result = new ObjectResult(new
         {

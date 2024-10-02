@@ -28,6 +28,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<CommentaryService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddSingleton<IGDBTokenService>();
 
 builder.Services
     .AddIdentity<User, IdentityRole>()
