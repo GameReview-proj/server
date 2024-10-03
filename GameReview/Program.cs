@@ -2,6 +2,7 @@ using GameReview.Data;
 using GameReview.Models;
 using GameReview.Services;
 using GameReview.Services.Exceptions;
+using GameReview.Services.IGDB;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<CommentaryService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<IGDBService>();
 builder.Services.AddSingleton<IGDBTokenService>();
 
 builder.Services
