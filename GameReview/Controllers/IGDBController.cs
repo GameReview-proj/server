@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace GameReview.Controllers;
 
-[Authorize]
+//[Authorize]
 [Route("igdb")]
 [ApiController]
 public class IgdbController(IGDBService service) : ControllerBase

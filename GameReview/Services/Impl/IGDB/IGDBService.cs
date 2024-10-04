@@ -13,12 +13,14 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
 
     public IEnumerable<ExternalApiGame> GetGamesByName(string name, List<string> fields)
     {
+        if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
+
         var endpoint = GetEndpointByName("Game");
 
         using HttpClient client = new();
         SetDefaultHeaders(client);
 
-        HttpResponseMessage IGDBResponse = client.PostAsync(endpoint.Url, new StringContent($"search \"{name}\";fields name;")).Result;
+        HttpResponseMessage IGDBResponse = client.PostAsync(endpoint.Url, new StringContent($"search \"{name}\";fields {string.Join(" ", fields)};")).Result;
         IGDBResponse.EnsureSuccessStatusCode();
 
         string content = IGDBResponse.Content.ReadAsStringAsync().Result;
@@ -41,5 +43,12 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
             .Endpoints
             .FirstOrDefault(e => e.Name.Equals(name))
             ?? throw new ExternalAPIException("Erro ao buscar endpoint");
+    }
+
+    public bool CheckFieldsExists(string _object, List<string> fields)
+    {
+        HashSet<string> fieldsHash = new(fields);
+
+        return IGDBGlossary.FieldsByObject.GetValueOrDefault(_object).All(fieldsHash.Contains);
     }
 }
