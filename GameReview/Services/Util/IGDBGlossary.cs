@@ -21,7 +21,8 @@ public static class IGDBGlossary
                 "remakes", "remasters", "similar_games",
                 "status", "slug", "storyline",
                 "summary", "updated_at", "url",
-                "version_title", "websites", "videos"
+                "version_title", "websites", "videos",
+                "name"
             }
         }
     };

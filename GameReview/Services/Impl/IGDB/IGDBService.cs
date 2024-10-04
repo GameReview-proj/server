@@ -47,8 +47,6 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
 
     public bool CheckFieldsExists(string _object, List<string> fields)
     {
-        HashSet<string> fieldsHash = new(fields);
-
-        return IGDBGlossary.FieldsByObject.GetValueOrDefault(_object).All(fieldsHash.Contains);
+        return fields.All(field => IGDBGlossary.FieldsByObject.GetValueOrDefault(_object).Contains(field));
     }
 }
