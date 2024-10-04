@@ -1,10 +1,10 @@
 ﻿using GameReview.Data.Adapters;
 using GameReview.Data.DTOs.Commentary;
 using GameReview.Services;
+using GameReview.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel.DataAnnotations;
 
 namespace GameReview.Controllers;
 
@@ -18,7 +18,7 @@ public class CommentaryController(CommentaryService service) : ControllerBase
     [HttpPost]
     public IActionResult PostCommentary([FromBody] InCommentaryDTO dto)
     {
-        _service.CreateCommentary(dto);
+        _service.Create(dto);
 
         return Ok();
     }
