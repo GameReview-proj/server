@@ -1,5 +1,5 @@
 ﻿using GameReview.Data.DTOs.User;
-using GameReview.Services;
+using GameReview.Services.Impl;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameReview.Controllers;
@@ -13,7 +13,7 @@ public class UserController(UserService service) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> PostUser(InUserDTO dto)
     {
-        await _service.CreateUser(dto);
+        await _service.Create(dto);
         return Ok();
     }
 
@@ -28,7 +28,7 @@ public class UserController(UserService service) : ControllerBase
     [HttpPut("{id}")]
     public IActionResult UpdateUser(InPutUserDTO dto, string id)
     {
-        _service.UpdateUser(dto, id);
+        _service.Update(dto, id);
 
         return Ok();
     }
