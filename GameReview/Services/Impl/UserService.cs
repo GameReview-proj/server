@@ -5,19 +5,19 @@ using GameReview.Models;
 using GameReview.Services.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
-namespace GameReview.Services;
+namespace GameReview.Services.Impl;
 
 public class UserService(UserManager<User> userManager,
     SignInManager<User> signInManager,
     DatabaseContext context,
-    TokenService tokenService)
+    TokenService tokenService) : IUserService
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly SignInManager<User> _signInManager = signInManager;
     private readonly DatabaseContext _context = context;
     private readonly TokenService _tokenService = tokenService;
 
-    public async Task<User> CreateUser(InUserDTO dto)
+    public async Task<User> Create(InUserDTO dto)
     {
         if (_context.Users.Any(u => u.Email.Equals(dto.Email)))
             throw new ConflictException($"Usuário com email {dto.Email} já existente");
@@ -29,6 +29,11 @@ public class UserService(UserManager<User> userManager,
         if (!result.Succeeded) throw new ApplicationException("Falha ao cadastrar usuário");
 
         return newUser;
+    }
+
+    public void Delete(int id)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<string> Login(InLoginDTO dto)
@@ -48,7 +53,7 @@ public class UserService(UserManager<User> userManager,
         return token;
     }
 
-    public User UpdateUser(InPutUserDTO dto, string id)
+    public User Update(InPutUserDTO dto, string id)
     {
         var userFound = _context.Users.FirstOrDefault(r => r.Id.Equals(id)) ?? throw new NotFoundException($"Usuário não encontrado com o id: {id}");
 

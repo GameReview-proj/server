@@ -6,10 +6,10 @@ using GameReview.Services.Exceptions;
 
 namespace GameReview.Services;
 
-public class ReviewService(DatabaseContext context)
+public class ReviewService(DatabaseContext context) : IReviewService
 {
     private readonly DatabaseContext _context = context;
-    public Review CreateReview(InReviewDTO dto)
+    public Review Create(InReviewDTO dto)
     {
         var userFound = _context
                 .Users
@@ -41,7 +41,7 @@ public class ReviewService(DatabaseContext context)
         return [.. reviewsFound];
     }
 
-    public void DeleteById(int id)
+    public void Delete(int id)
     {
         var reviewFound = _context.Reviews.FirstOrDefault(r =>
         r.Id.Equals(id))

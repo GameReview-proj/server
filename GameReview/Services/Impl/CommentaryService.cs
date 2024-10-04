@@ -3,29 +3,28 @@ using GameReview.Data.Adapters;
 using GameReview.Data.DTOs.Commentary;
 using GameReview.Models;
 using GameReview.Services.Exceptions;
-using System.ComponentModel.DataAnnotations;
 
-namespace GameReview.Services;
+namespace GameReview.Services.Impl;
 
-public class CommentaryService(DatabaseContext context)
+public class CommentaryService(DatabaseContext context) : ICommentaryService
 {
     private readonly DatabaseContext _context = context;
 
-    public Commentary CreateCommentary(InCommentaryDTO dto)
+    public Commentary Create(InCommentaryDTO dto)
     {
-        if ((dto.CommentaryId != null && dto.CommentaryId != 0) && (dto.ReviewId != null || dto.ReviewId == 0))
+        if (dto.CommentaryId != null && dto.CommentaryId != 0 && (dto.ReviewId != null || dto.ReviewId == 0))
             throw new BadRequestException("Um comentário só pode ser atribuído a uma avaliação OU comentário");
 
-        if ((dto.CommentaryId != null && dto.CommentaryId != 0) && !(_context
+        if (dto.CommentaryId != null && dto.CommentaryId != 0 && !_context
                 .Commentaries
-                .Any(r => r.Id.Equals(dto.CommentaryId))))
+                .Any(r => r.Id.Equals(dto.CommentaryId)))
         {
             throw new NotFoundException($"Nenhum comentário encontrado com o id: {dto.CommentaryId}");
         }
 
-        if ((dto.ReviewId != null || dto.ReviewId == 0) && !(_context
+        if ((dto.ReviewId != null || dto.ReviewId == 0) && !_context
                 .Reviews
-                .Any(r => r.Id.Equals(dto.ReviewId))))
+                .Any(r => r.Id.Equals(dto.ReviewId)))
         {
             throw new NotFoundException($"Nenhum comentário encontrado com o id: {dto.CommentaryId}");
         }
@@ -62,5 +61,15 @@ public class CommentaryService(DatabaseContext context)
             );
 
         return [.. commentariesFound];
+    }
+    
+    public Commentary GetById(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Delete(int id)
+    {
+        throw new NotImplementedException();
     }
 }

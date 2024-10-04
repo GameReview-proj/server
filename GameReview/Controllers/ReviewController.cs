@@ -17,7 +17,7 @@ public class ReviewController(ReviewService service) : ControllerBase
     [HttpPost]
     public IActionResult PostReview([FromBody] InReviewDTO dto)
     {
-        _service.CreateReview(dto);
+        _service.Create(dto);
 
         return Ok();
     }
@@ -43,7 +43,7 @@ public class ReviewController(ReviewService service) : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteById(int id)
     {
-        _service.DeleteById(id);
+        _service.Delete(id);
 
         return NoContent();
     }
