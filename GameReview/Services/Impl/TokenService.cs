@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace GameReview.Services;
+namespace GameReview.Services.Impl;
 
 public class TokenService(IConfiguration configuration)
 {
