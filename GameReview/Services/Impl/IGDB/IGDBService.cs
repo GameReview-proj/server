@@ -3,16 +3,15 @@ using GameReview.Data.JsonObjects;
 using GameReview.Services.Exceptions;
 using GameReview.Services.Util;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace GameReview.Services.IGDB;
+namespace GameReview.Services.Impl.IGDB;
 
-public class IGDBService(IGDBTokenService tokenService, IConfiguration configuration)
+public class IGDBService(IGDBTokenService tokenService, IConfiguration configuration) : IIGDBService
 {
     private readonly IGDBTokenService _tokenService = tokenService;
     private readonly IConfiguration _configuration = configuration;
 
-    public IEnumerable<ExternalApiGame> GetGameByName(string name)
+    public IEnumerable<ExternalApiGame> GetGamesByName(string name, List<string> fields)
     {
         var endpoint = GetEndpointByName("Game");
 
@@ -32,7 +31,7 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
     {
         IGDBToken token = _tokenService.GetToken();
 
-        client.DefaultRequestHeaders.Add("Client-ID", configuration["IGDB:ClientId"]);
+        client.DefaultRequestHeaders.Add("Client-ID", _configuration["IGDB:ClientId"]);
         client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.AccessToken}");
     }
 
