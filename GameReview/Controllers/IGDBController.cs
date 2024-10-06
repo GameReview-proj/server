@@ -23,7 +23,7 @@ public class IgdbController(IGDBService service) : ControllerBase
     }
 
     [HttpGet("genre")]
-    public IActionResult GetGenresByName([FromQuery] string? name, [FromQuery] List<string>? fields)
+    public IActionResult GetGenres([FromQuery] List<string>? fields)
     {
         var genresFound = _service.GetGenres(fields);
 
