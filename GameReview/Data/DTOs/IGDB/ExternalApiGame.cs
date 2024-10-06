@@ -21,10 +21,6 @@ public record ExternalApiGame
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? Category { get; set; }
 
-    [JsonProperty("collection")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<int>? Collection { get; set; }
-
     [JsonProperty("collections")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? Collections { get; set; }
