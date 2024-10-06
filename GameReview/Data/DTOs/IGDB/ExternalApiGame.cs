@@ -21,17 +21,9 @@ public record ExternalApiGame
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? Category { get; set; }
 
-    [JsonProperty("collection")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<int>? Collection { get; set; }
-
     [JsonProperty("collections")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? Collections { get; set; }
-
-    [JsonProperty("cover")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<int>? Cover { get; set; }
 
     [JsonProperty("dlcs")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -140,4 +132,8 @@ public record ExternalApiGame
     [JsonProperty("name")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Name { get; set; }
+
+    [JsonProperty("cover")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ExternalApiCover Cover { get; set; }
 }

@@ -19,7 +19,7 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
 
         var endpoint = GetEndpointByName("Game");
-        string gamesRequestBody = $"search \"{name}\"; fields {fieldsSeach};";
+        string gamesRequestBody = $"search \"{name}\"; fields cover.image_id, {fieldsSeach};";
 
         var gamesFound = SendIGDBRequest<ExternalApiGame>(endpoint.Url, gamesRequestBody).Result;
 

@@ -11,13 +11,13 @@ public class ExternalAPIGenre
 
     [JsonProperty("name")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Name {get;set;}
+    public string? Name { get; set; }
 
     [JsonProperty("slug")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Slug {get;set;}
+    public string? Slug { get; set; }
 
     [JsonProperty("url")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Url { get;set;}
+    public string? Url { get; set; }
 }
