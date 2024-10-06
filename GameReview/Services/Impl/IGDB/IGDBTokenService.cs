@@ -2,7 +2,7 @@
 using GameReview.Data.JsonObjects;
 using Newtonsoft.Json;
 
-namespace GameReview.Services.IGDB;
+namespace GameReview.Services.Impl.IGDB;
 
 public class IGDBTokenService(IConfiguration configuration)
 {

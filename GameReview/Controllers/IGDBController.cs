@@ -1,11 +1,11 @@
-﻿using GameReview.Services.IGDB;
+﻿using GameReview.Services.Impl.IGDB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 namespace GameReview.Controllers;
 
-[Authorize]
+//[Authorize]
 [Route("igdb")]
 [ApiController]
 public class IgdbController(IGDBService service) : ControllerBase
@@ -13,12 +13,22 @@ public class IgdbController(IGDBService service) : ControllerBase
     private readonly IGDBService _service = service;
 
     [HttpGet("game")]
-    public IActionResult GetGamesByName([FromQuery] string? name)
+    public IActionResult GetGamesByName([FromQuery] string? name, [FromQuery] List<string>? fields)
     {
-        var gamesFound = _service.GetGameByName(name);
+        var gamesFound = _service.GetGamesByName(name, fields);
 
         if (gamesFound.IsNullOrEmpty()) return NoContent();
 
         return Ok(gamesFound);
+    }
+
+    [HttpGet("genre")]
+    public IActionResult GetGenresByName([FromQuery] string? name, [FromQuery] List<string>? fields)
+    {
+        var genresFound = _service.GetGenres(fields);
+
+        if (genresFound.IsNullOrEmpty()) return NoContent();
+
+        return Ok(genresFound);
     }
 }
