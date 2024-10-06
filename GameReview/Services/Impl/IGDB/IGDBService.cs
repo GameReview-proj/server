@@ -14,7 +14,7 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
 
     public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGames(string? name, List<string>? fields, int? from, int? take, List<int>? platforms, List<int>? genres)
     {
-        string fieldsSeach = $"cover.id, {(fields.IsNullOrEmpty() ? "name" : string.Join(", ", fields))}";
+        string fieldsSeach = $"cover.image_id, {(fields.IsNullOrEmpty() ? "name" : string.Join(", ", fields))}";
         if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
 
         List<string> filters = [];
