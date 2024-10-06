@@ -13,9 +13,9 @@ public class IgdbController(IGDBService service) : ControllerBase
     private readonly IGDBService _service = service;
 
     [HttpGet("game")]
-    public IActionResult GetGamesByName([FromQuery] string? name, [FromQuery] List<string>? fields)
+    public IActionResult GetGamesByName([FromQuery] string? name, [FromQuery] List<string>? fields, [FromQuery] int? from = 0, [FromQuery] int? take = 30)
     {
-        var gamesFound = _service.GetGamesByName(name, fields);
+        var gamesFound = _service.GetGamesByName(name, fields, from, take);
 
         if (gamesFound.IsNullOrEmpty()) return NoContent();
 

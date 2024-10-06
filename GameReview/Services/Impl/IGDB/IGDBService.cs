@@ -12,14 +12,14 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
     private readonly IGDBTokenService _tokenService = tokenService;
     private readonly IConfiguration _configuration = configuration;
 
-    public IEnumerable<ExternalApiGame> GetGamesByName(string name, List<string> fields)
+    public IEnumerable<ExternalApiGame> GetGamesByName(string name, List<string>? fields, int? from, int? take)
     {
         string fieldsSeach = fields.IsNullOrEmpty() ? "*" : string.Join(", ", fields);
 
         if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
 
         var endpoint = GetEndpointByName("Game");
-        string gamesRequestBody = $"search \"{name}\"; fields cover.image_id, {fieldsSeach};";
+        string gamesRequestBody = $"search \"{name}\"; fields cover.image_id, {fieldsSeach}; limit {take}; offset {from};";
 
         var gamesFound = SendIGDBRequest<ExternalApiGame>(endpoint.Url, gamesRequestBody).Result;
 
@@ -42,11 +42,12 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
 
     private async Task<IEnumerable<T>> SendIGDBRequest<T>(string url, string requestBody)
     {
+        Console.WriteLine(requestBody);
         using HttpClient client = new();
         SetDefaultHeaders(client);
 
         HttpResponseMessage IGDBResponse = await client.PostAsync(url, new StringContent(requestBody));
-        IGDBResponse.EnsureSuccessStatusCode();
+        //IGDBResponse.EnsureSuccessStatusCode();
 
         string content = await IGDBResponse.Content.ReadAsStringAsync();
         if (content == "") return [];
