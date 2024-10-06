@@ -12,21 +12,42 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
     private readonly IGDBTokenService _tokenService = tokenService;
     private readonly IConfiguration _configuration = configuration;
 
-    public IEnumerable<ExternalApiGame> GetGamesByName(string name, List<string>? fields, int? from, int? take)
+    public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGamesByName(string name, List<string>? fields, int? from, int? take, List<int>? platforms)
     {
-        string fieldsSeach = fields.IsNullOrEmpty() ? "*" : string.Join(", ", fields);
-
+        string fieldsSeach = $"cover.id, {(fields.IsNullOrEmpty() ? "*" : string.Join(", ", fields))}";
         if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
 
-        var endpoint = GetEndpointByName("Game");
-        string gamesRequestBody = $"search \"{name}\"; fields cover.image_id, {fieldsSeach}; limit {take}; offset {from};";
+        List<string> filters = [ $"name ~ *\"{name}\"*" ];
 
-        var gamesFound = SendIGDBRequest<ExternalApiGame>(endpoint.Url, gamesRequestBody).Result;
+        if (!platforms.IsNullOrEmpty()) filters.Add($"platform != n & platform = ({string.Join(", ", platforms)})");
+
+        string multiQueryBody = GenerateMultiQueryBody(new Dictionary<string, MultiQuery>
+        {
+            {
+                "games", new("games", "Games") {
+                    Fields = fieldsSeach,
+                    Filters = filters,
+                    From = from,
+                    Take = take,
+                    Pageable = true
+                }
+            },
+            {
+                "games/count", new("games/count", "Count") {
+                    Filters = filters,
+                    Pageable = false
+                }
+            }
+        });
+
+        var endpoint = GetEndpointByName("MultiQuery");
+
+        var gamesFound = SendIGDBRequest<IGDBQueryResult<ExternalApiGame>>(endpoint.Url, multiQueryBody).Result;
 
         return gamesFound;
     }
 
-    public IEnumerable<ExternalAPIGenre> GetGenres(List<string> fields)
+    public IEnumerable<ExternalAPIGenre> GetGenres(List<string>? fields)
     {
         string fieldsSeach = fields.IsNullOrEmpty() ? "*" : string.Join(", ", fields);
 
@@ -40,14 +61,40 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         return genresFound;
     }
 
+    private static string GenerateMultiQueryBody(Dictionary<string, MultiQuery> queries)
+    {
+        string requestBody = "";
+
+        foreach (string key in queries.Keys)
+        {
+            var query = queries.GetValueOrDefault(key);
+
+            requestBody += $"query {query.ObjectName} \"{query.Name}\" {{" +
+                $"{(query.Fields != string.Empty ? $"fields {query.Fields};" : string.Empty)}" +
+                $"{(!query.Filters.IsNullOrEmpty() ? $"where {string.Join("& ", query.Filters)};" : string.Empty)}" +
+                $"{(query.Pageable ? $"limit {query.Take}; offset {query.From};" : string.Empty)}" +
+                $"}};";
+        }
+
+        return requestBody;
+    }
+
+    private record MultiQuery(string ObjectName, string Name)
+    {
+        public string? Fields { get; set; } = string.Empty;
+        public List<string> Filters { get; set; } = [string.Empty];
+        public int? From { get; set; } = 0;
+        public int? Take { get; set; } = 0;
+        public bool Pageable { get; set; } = false;
+    }
+
     private async Task<IEnumerable<T>> SendIGDBRequest<T>(string url, string requestBody)
     {
-        Console.WriteLine(requestBody);
         using HttpClient client = new();
         SetDefaultHeaders(client);
 
         HttpResponseMessage IGDBResponse = await client.PostAsync(url, new StringContent(requestBody));
-        //IGDBResponse.EnsureSuccessStatusCode();
+        IGDBResponse.EnsureSuccessStatusCode();
 
         string content = await IGDBResponse.Content.ReadAsStringAsync();
         if (content == "") return [];
