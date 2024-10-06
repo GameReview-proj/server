@@ -21,4 +21,14 @@ public class IgdbController(IGDBService service) : ControllerBase
 
         return Ok(gamesFound);
     }
+
+    [HttpGet("genre")]
+    public IActionResult GetGenresByName([FromQuery] string? name, [FromQuery] List<string>? fields)
+    {
+        var genresFound = _service.GetGenres(fields);
+
+        if (genresFound.IsNullOrEmpty()) return NoContent();
+
+        return Ok(genresFound);
+    }
 }
