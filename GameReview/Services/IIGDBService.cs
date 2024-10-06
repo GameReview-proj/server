@@ -4,7 +4,7 @@ namespace GameReview.Services;
 
 public interface IIGDBService
 {
-    public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGamesByName(string name,
+    public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGames(string? name,
         List<string>? fields,
         int? from,
         int? take,

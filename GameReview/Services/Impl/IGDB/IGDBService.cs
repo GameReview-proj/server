@@ -12,13 +12,14 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
     private readonly IGDBTokenService _tokenService = tokenService;
     private readonly IConfiguration _configuration = configuration;
 
-    public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGamesByName(string name, List<string>? fields, int? from, int? take, List<int>? platforms, List<int>? genres)
+    public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGames(string? name, List<string>? fields, int? from, int? take, List<int>? platforms, List<int>? genres)
     {
-        string fieldsSeach = $"cover.id, {(fields.IsNullOrEmpty() ? "*" : string.Join(", ", fields))}";
+        string fieldsSeach = $"cover.id, {(fields.IsNullOrEmpty() ? "name" : string.Join(", ", fields))}";
         if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
 
-        List<string> filters = [ $"name ~ *\"{name}\"*" ];
+        List<string> filters = [];
 
+        if (!name.IsNullOrEmpty()) filters.Add($"name ~ *\"{name}\"*");
         if (!platforms.IsNullOrEmpty()) filters.Add($"platform != n & platform = ({string.Join(", ", platforms)})");
         if (!genres.IsNullOrEmpty()) filters.Add($"genres != n & genres = ({string.Join(", ", genres)})");
 
