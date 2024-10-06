@@ -5,7 +5,8 @@ public static class IGDBGlossary
     public static List<IGDBEndpoint> Endpoints { get; } = new()
     {
         new IGDBEndpoint { Name = "Game", Url = "https://api.igdb.com/v4/games", Method = "POST" },
-        new IGDBEndpoint {Name = "Genre", Url = "https://api.igdb.com/v4/genres", Method = "POST"}
+        new IGDBEndpoint {Name = "Genre", Url = "https://api.igdb.com/v4/genres", Method = "POST"},
+        new IGDBEndpoint {Name = "MultiQuery", Url = "https://api.igdb.com/v4/multiquery", Method = "POST"}
     };
 
     public static Dictionary<string, List<string>> FieldsByObject { get; } = new()
@@ -23,7 +24,7 @@ public static class IGDBGlossary
                 "status", "slug", "storyline",
                 "summary", "updated_at", "url",
                 "version_title", "websites", "videos",
-                "name",
+                "name", "genres.name"
             }
         },
         {

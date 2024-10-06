@@ -45,10 +45,6 @@ public record ExternalApiGame
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? GameLocalizations { get; set; }
 
-    [JsonProperty("genres")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<int>? Genres { get; set; }
-
     [JsonProperty("hypes")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? Hypes { get; set; }
@@ -136,4 +132,8 @@ public record ExternalApiGame
     [JsonProperty("cover")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ExternalApiCover Cover { get; set; }
+
+    [JsonProperty("genres")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<ExternalAPIGenre > Genres { get; set; }
 }
