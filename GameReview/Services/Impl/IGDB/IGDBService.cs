@@ -12,7 +12,7 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
     private readonly IGDBTokenService _tokenService = tokenService;
     private readonly IConfiguration _configuration = configuration;
 
-    public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGamesByName(string name, List<string>? fields, int? from, int? take, List<int>? platforms)
+    public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGamesByName(string name, List<string>? fields, int? from, int? take, List<int>? platforms, List<int>? genres)
     {
         string fieldsSeach = $"cover.id, {(fields.IsNullOrEmpty() ? "*" : string.Join(", ", fields))}";
         if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
@@ -20,6 +20,7 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         List<string> filters = [ $"name ~ *\"{name}\"*" ];
 
         if (!platforms.IsNullOrEmpty()) filters.Add($"platform != n & platform = ({string.Join(", ", platforms)})");
+        if (!genres.IsNullOrEmpty()) filters.Add($"genres != n & genres = ({string.Join(", ", genres)})");
 
         string multiQueryBody = GenerateMultiQueryBody(new Dictionary<string, MultiQuery>
         {
@@ -39,6 +40,8 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
                 }
             }
         });
+
+        Console.WriteLine(multiQueryBody);
 
         var endpoint = GetEndpointByName("MultiQuery");
 
