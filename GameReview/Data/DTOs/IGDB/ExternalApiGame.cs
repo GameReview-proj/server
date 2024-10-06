@@ -1,6 +1,7 @@
 ﻿using JsonProperty = Newtonsoft.Json.JsonPropertyAttribute;
 using System.Text.Json.Serialization;
 using JsonIgnore = System.Text.Json.Serialization;
+using GameReview.Data.DTOs.IGDB.Enums;
 
 namespace GameReview.Data.DTOs.IGDB;
 
@@ -9,6 +10,20 @@ public record ExternalApiGame
     [JsonProperty("id")]
     public int ExternalId { get; set; }
 
+    [JsonProperty("category")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public GameCategoryEnum? Category { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string CategoryName => Category?.ToString();
+
+    [JsonProperty("status")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public GameStatusEnum? Status { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string StatusName => Status?.ToString();
+
     [JsonProperty("age_ratings")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? AgeRatings { get; set; }
@@ -16,10 +31,6 @@ public record ExternalApiGame
     [JsonProperty("alternative_names")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? AlternativeNames { get; set; }
-
-    [JsonProperty("category")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<int>? Category { get; set; }
 
     [JsonProperty("collections")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -88,10 +99,6 @@ public record ExternalApiGame
     [JsonProperty("similar_games")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<int>? SimilarGames { get; set; }
-
-    [JsonProperty("status")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Status { get; set; }
 
     [JsonProperty("slug")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
