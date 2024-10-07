@@ -62,10 +62,15 @@ public class CommentaryService(DatabaseContext context) : ICommentaryService
 
         return [.. commentariesFound];
     }
-    
+
     public Commentary GetById(int id)
     {
-        throw new NotImplementedException();
+        Commentary commentaryFound = _context
+            .Commentaries
+            .FirstOrDefault(c => c.Id.Equals(id))
+        ?? throw new NotFoundException($"Comentário não encontrado com o ID: {id}");
+
+        return commentaryFound;
     }
 
     public void Delete(int id)

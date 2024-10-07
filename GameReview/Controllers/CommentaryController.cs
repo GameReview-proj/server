@@ -35,4 +35,12 @@ public class CommentaryController(CommentaryService service) : ControllerBase
             .Select(CommentaryAdapter.ToCommentaryDTO)
             .ToList());
     }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var commentaryFound = _service.GetById(id);
+
+        return Ok(commentaryFound);
+    }
 }
