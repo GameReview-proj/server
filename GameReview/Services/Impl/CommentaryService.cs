@@ -75,6 +75,11 @@ public class CommentaryService(DatabaseContext context) : ICommentaryService
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        Commentary commentaryFound = GetById(id);
+
+        _context
+            .Commentaries
+            .Remove(commentaryFound);
+        _context.SaveChanges();
     }
 }

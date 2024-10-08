@@ -43,4 +43,12 @@ public class CommentaryController(CommentaryService service) : ControllerBase
 
         return Ok(commentaryFound);
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteById(int id)
+    {
+        _service.Delete(id);
+
+        return NoContent();
+    }
 }
