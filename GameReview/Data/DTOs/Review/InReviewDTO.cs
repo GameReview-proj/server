@@ -9,8 +9,6 @@ public record InReviewDTO(
     [MaxLength(255)]
     string? Description,
     [Required]
-    string ExternalId,
-    [Required]
-    string UserId
+    string ExternalId
     )
 { }

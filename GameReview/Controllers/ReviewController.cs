@@ -4,6 +4,7 @@ using GameReview.Models;
 using GameReview.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GameReview.Controllers;
 
@@ -17,7 +18,11 @@ public class ReviewController(ReviewService service) : ControllerBase
     [HttpPost]
     public IActionResult PostReview([FromBody] InReviewDTO dto)
     {
-        _service.Create(dto);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        _service.Create(dto, userId);
 
         return Ok();
     }

@@ -2,5 +2,5 @@
 
 public interface IWriteable<T, DTO>
 {
-    public T Create(DTO dto);
+    public T Create(DTO dto, string userId);
 }
