@@ -142,5 +142,9 @@ public record ExternalApiGame
 
     [JsonProperty("genres")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<ExternalAPIGenre > Genres { get; set; }
+    public List<ExternalAPIGenre> Genres { get; set; }
+
+    [JsonProperty("platforms")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<int> Platforms { get; set; }
 }

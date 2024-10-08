@@ -25,7 +25,7 @@ public static class IGDBGlossary
                 "status", "slug", "storyline",
                 "summary", "updated_at", "url",
                 "version_title", "websites", "videos",
-                "name", "genres.name"
+                "name", "genres.name", "platforms"
             }
         },
         {
