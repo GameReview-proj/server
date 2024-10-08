@@ -29,6 +29,14 @@ public class IgdbController(IGDBService service) : ControllerBase
             gamesFound.First(q => q.Name.Equals("Count")).Count));
     }
 
+    [HttpGet("game/{id}")]
+    public IActionResult GetGameById(int id, [FromQuery] List<string>? fields)
+    {
+        var gameFound = _service.GetGameById(id, fields);
+
+        return Ok(gameFound);
+    }
+
     [HttpGet("genre")]
     public IActionResult GetGenres([FromQuery] List<string>? fields)
     {
@@ -37,5 +45,15 @@ public class IgdbController(IGDBService service) : ControllerBase
         if (genresFound.IsNullOrEmpty()) return NoContent();
 
         return Ok(genresFound);
+    }
+
+    [HttpGet("platform")]
+    public IActionResult GetPlatforms([FromQuery] List<string>? fields)
+    {
+        var platformsFound = _service.GetPlatforms(fields);
+
+        if (platformsFound.IsNullOrEmpty()) return NoContent();
+
+        return Ok(platformsFound);
     }
 }
