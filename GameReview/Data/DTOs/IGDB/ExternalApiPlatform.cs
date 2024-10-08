@@ -18,7 +18,7 @@ public record ExternalApiPlatform
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? AlternativeName { get; set; }
 
-    [JsonProperty("alternative_name")]
+    [JsonProperty("category")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public PlatformCategoryEnum? category;
 

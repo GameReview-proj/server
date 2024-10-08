@@ -13,4 +13,6 @@ public interface IIGDBService
     public IEnumerable<ExternalAPIGenre> GetGenres(List<string>? fields);
 
     public ExternalApiGame GetGameById(int id, List<string>? fields);
+
+    public IEnumerable<ExternalApiPlatform> GetPlatforms(List<string>? fields);
 }

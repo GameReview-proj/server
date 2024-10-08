@@ -46,4 +46,14 @@ public class IgdbController(IGDBService service) : ControllerBase
 
         return Ok(genresFound);
     }
+
+    [HttpGet("platform")]
+    public IActionResult GetPlatforms([FromQuery] List<string>? fields)
+    {
+        var platformsFound = _service.GetPlatforms(fields);
+
+        if (platformsFound.IsNullOrEmpty()) return NoContent();
+
+        return Ok(platformsFound);
+    }
 }
