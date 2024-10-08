@@ -22,7 +22,7 @@ public record ExternalApiGame
     public GameStatusEnum? Status { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string StatusName => Status?.ToString();
+    public string? StatusName => Status?.ToString();
 
     [JsonProperty("age_ratings")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
