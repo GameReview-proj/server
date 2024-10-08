@@ -9,12 +9,12 @@ namespace GameReview.Services;
 public class ReviewService(DatabaseContext context) : IReviewService
 {
     private readonly DatabaseContext _context = context;
-    public Review Create(InReviewDTO dto)
+    public Review Create(InReviewDTO dto, string userId)
     {
         var userFound = _context
                 .Users
-                .FirstOrDefault(u => u.Id.Equals(dto.UserId))
-        ?? throw new NotFoundException($"Usuário não encontrado com o id: {dto.UserId}");
+                .FirstOrDefault(u => u.Id.Equals(userId))
+        ?? throw new NotFoundException($"Usuário não encontrado com o id: {userId}");
 
         Review newReview = ReviewAdapter.ToEntity(dto, userFound);
 

@@ -10,7 +10,7 @@ public class CommentaryService(DatabaseContext context) : ICommentaryService
 {
     private readonly DatabaseContext _context = context;
 
-    public Commentary Create(InCommentaryDTO dto)
+    public Commentary Create(InCommentaryDTO dto, string userId)
     {
         if (dto.CommentaryId != null && dto.CommentaryId != 0 && (dto.ReviewId != null || dto.ReviewId == 0))
             throw new BadRequestException("Um comentário só pode ser atribuído a uma avaliação OU comentário");
@@ -31,8 +31,8 @@ public class CommentaryService(DatabaseContext context) : ICommentaryService
 
         User user = _context
             .Users
-            .FirstOrDefault(r => r.Id.Equals(dto.UserId))
-        ?? throw new NotFoundException($"Usuário não encontrado com o id: {dto.UserId}");
+            .FirstOrDefault(r => r.Id.Equals(userId))
+        ?? throw new NotFoundException($"Usuário não encontrado com o id: {userId}");
 
         Review? reviewFound = _context
             .Reviews
@@ -62,14 +62,24 @@ public class CommentaryService(DatabaseContext context) : ICommentaryService
 
         return [.. commentariesFound];
     }
-    
+
     public Commentary GetById(int id)
     {
-        throw new NotImplementedException();
+        Commentary commentaryFound = _context
+            .Commentaries
+            .FirstOrDefault(c => c.Id.Equals(id))
+        ?? throw new NotFoundException($"Comentário não encontrado com o ID: {id}");
+
+        return commentaryFound;
     }
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        Commentary commentaryFound = GetById(id);
+
+        _context
+            .Commentaries
+            .Remove(commentaryFound);
+        _context.SaveChanges();
     }
 }
