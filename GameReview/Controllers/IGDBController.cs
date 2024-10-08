@@ -29,6 +29,14 @@ public class IgdbController(IGDBService service) : ControllerBase
             gamesFound.First(q => q.Name.Equals("Count")).Count));
     }
 
+    [HttpGet("game/{id}")]
+    public IActionResult GetGameById(int id, [FromQuery] List<string>? fields)
+    {
+        var gameFound = _service.GetGameById(id, fields);
+
+        return Ok(gameFound);
+    }
+
     [HttpGet("genre")]
     public IActionResult GetGenres([FromQuery] List<string>? fields)
     {

@@ -14,8 +14,8 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
 
     public IEnumerable<IGDBQueryResult<ExternalApiGame>> GetGames(string? name, List<string>? fields, int? from, int? take, List<int>? platforms, List<int>? genres)
     {
-        string fieldsSeach = $"cover.image_id, {(fields.IsNullOrEmpty() ? "name" : string.Join(", ", fields))}";
         if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
+        string fieldsSearch = fields.IsNullOrEmpty() ? "cover.image_id, name" : string.Join(", ", fields);
 
         List<string> filters = [];
 
@@ -27,7 +27,7 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         {
             {
                 "games", new("games", "Games") {
-                    Fields = fieldsSeach,
+                    Fields = fieldsSearch,
                     Filters = filters,
                     From = from,
                     Take = take,
@@ -42,8 +42,6 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
             }
         });
 
-        Console.WriteLine(multiQueryBody);
-
         var endpoint = GetEndpointByName("MultiQuery");
 
         var gamesFound = SendIGDBRequest<IGDBQueryResult<ExternalApiGame>>(endpoint.Url, multiQueryBody).Result;
@@ -53,16 +51,31 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
 
     public IEnumerable<ExternalAPIGenre> GetGenres(List<string>? fields)
     {
-        string fieldsSeach = fields.IsNullOrEmpty() ? "*" : string.Join(", ", fields);
+        string fieldsSearch = fields.IsNullOrEmpty() ? "*" : string.Join(", ", fields);
 
         if (!CheckFieldsExists("Genre", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
 
         var endpoint = GetEndpointByName("Genre");
-        string genresRequestBody = $"fields {fieldsSeach};";
+        string genresRequestBody = $"fields {fieldsSearch};";
 
         var genresFound = SendIGDBRequest<ExternalAPIGenre>(endpoint.Url, genresRequestBody).Result;
 
         return genresFound;
+    }
+
+    public ExternalApiGame GetGameById(int id, List<string>? fields)
+    {
+        if (!CheckFieldsExists("Game", fields)) throw new BadRequestException("Campos de pesquisa inválidos");
+        string fieldsSearch = fields.IsNullOrEmpty() ? "name, cover.image_id" : string.Join(", ", fields);
+
+        var endpoint = GetEndpointByName("Game");
+        string requestBody = $"fields {fieldsSearch}; where id = {id};";
+
+        var gameFound = SendIGDBRequest<ExternalApiGame>(endpoint.Url, requestBody).Result;
+
+        if (gameFound.IsNullOrEmpty()) throw new NotFoundException($"Jogo não encontrado com o ID {id}");
+
+        return gameFound.First();
     }
 
     private static string GenerateMultiQueryBody(Dictionary<string, MultiQuery> queries)
@@ -96,12 +109,14 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
     {
         using HttpClient client = new();
         SetDefaultHeaders(client);
-
+        
         HttpResponseMessage IGDBResponse = await client.PostAsync(url, new StringContent(requestBody));
+        string content = await IGDBResponse.Content.ReadAsStringAsync();
+
+        if (content == "") return [];
+
         IGDBResponse.EnsureSuccessStatusCode();
 
-        string content = await IGDBResponse.Content.ReadAsStringAsync();
-        if (content == "") return [];
 
         var responseFound = JsonConvert.DeserializeObject<IEnumerable<T>>(content, new JsonSerializerSettings())
             ?? throw new ExternalAPIException("Falha ao converter JSON");
