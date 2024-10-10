@@ -74,12 +74,21 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         return gameFound.First();
     }
 
-    public IEnumerable<ExternalApiPlatform> GetPlatforms(List<string>? fields)
+    public IEnumerable<ExternalApiPlatform> GetPlatforms(List<string>? fields, string? name)
     {
         string fieldsSearch = GenerateFieldsSearch("Platform", fields, "*");
 
+        string filters = "";
+
+        if (!name.IsNullOrEmpty()) filters += $"name ~ *\"{name}\"*";
+
+        if (!filters.IsNullOrEmpty())
+        {
+            filters = $"where {filters};";
+        }
+
         var endpoint = GetEndpointByName("Platform");
-        string requestBody = $"fields {fieldsSearch}; limit 215; offset 0;";
+        string requestBody = $"fields {fieldsSearch}; limit 215; offset 0; {filters}";
 
         var platformsFound = SendIGDBRequest<ExternalApiPlatform>(endpoint.Url, requestBody).Result;
 

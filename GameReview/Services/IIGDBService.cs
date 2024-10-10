@@ -14,5 +14,5 @@ public interface IIGDBService
 
     public ExternalApiGame GetGameById(int id, List<string>? fields);
 
-    public IEnumerable<ExternalApiPlatform> GetPlatforms(List<string>? fields);
+    public IEnumerable<ExternalApiPlatform> GetPlatforms(List<string>? fields, string? name);
 }
