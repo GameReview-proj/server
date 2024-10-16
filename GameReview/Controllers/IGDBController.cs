@@ -14,7 +14,7 @@ public class IgdbController(IGDBService service) : ControllerBase
     private readonly IGDBService _service = service;
 
     [HttpGet("game")]
-    public IActionResult GetGamesByName([FromQuery] string? name,
+    public IActionResult GetGames([FromQuery] string? name,
         [FromQuery] List<string>? fields,
         [FromQuery] List<int>? genres,
         [FromQuery] List<int>? platforms,
