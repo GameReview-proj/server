@@ -13,6 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(opts =>
+{
+    opts.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173");
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowCredentials();
+    });
+});
+
 builder.Services.AddControllers(opts =>
 {
     opts.Filters.Add(new GlobalExceptionFilter());
@@ -27,6 +38,7 @@ builder.Services.AddDbContext<DatabaseContext>(opts =>
 });
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<BlobService>();
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<CommentaryService>();
 builder.Services.AddScoped<TokenService>();
@@ -46,10 +58,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
 app.MapControllers();
+app.UseCors();
 
 app.Run();

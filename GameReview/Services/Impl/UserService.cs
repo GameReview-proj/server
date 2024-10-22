@@ -62,4 +62,14 @@ public class UserService(UserManager<User> userManager,
 
         return userFound;
     }
+
+    public User UpdateProfilePicture(string pictureUrl, string id)
+    {
+        var userFound = _context.Users.FirstOrDefault(r => r.Id.Equals(id)) ?? throw new NotFoundException($"Usuário não encontrado com o id: {id}");
+
+        userFound.Picture = pictureUrl;
+        _context.SaveChanges();
+
+        return userFound;
+    }
 }

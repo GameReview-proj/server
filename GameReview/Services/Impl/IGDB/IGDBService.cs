@@ -19,8 +19,8 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         List<string> filters = [];
 
         if (!name.IsNullOrEmpty()) filters.Add($"name ~ *\"{name}\"*");
-        if (!platforms.IsNullOrEmpty()) filters.Add($"platform != n & platform = ({string.Join(", ", platforms)})");
-        if (!genres.IsNullOrEmpty()) filters.Add($"genres != n & genres = ({string.Join(", ", genres)})");
+        if (!platforms.IsNullOrEmpty()) filters.Add($"platforms != n & platforms = {{{string.Join(", ", platforms)}}}");
+        if (!genres.IsNullOrEmpty()) filters.Add($"genres != n & genres = {{{string.Join(", ", genres)}}}");
 
         string multiQueryBody = GenerateMultiQueryBody(new Dictionary<string, MultiQuery>
         {
@@ -74,12 +74,21 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         return gameFound.First();
     }
 
-    public IEnumerable<ExternalApiPlatform> GetPlatforms(List<string>? fields)
+    public IEnumerable<ExternalApiPlatform> GetPlatforms(List<string>? fields, string? name)
     {
         string fieldsSearch = GenerateFieldsSearch("Platform", fields, "*");
 
+        string filters = "";
+
+        if (!name.IsNullOrEmpty()) filters += $"name ~ *\"{name}\"*";
+
+        if (!filters.IsNullOrEmpty())
+        {
+            filters = $"where {filters};";
+        }
+
         var endpoint = GetEndpointByName("Platform");
-        string requestBody = $"fields {fieldsSearch}; limit 215; offset 0;";
+        string requestBody = $"fields {fieldsSearch}; limit 215; offset 0; {filters}";
 
         var platformsFound = SendIGDBRequest<ExternalApiPlatform>(endpoint.Url, requestBody).Result;
 
@@ -113,15 +122,6 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         return requestBody;
     }
 
-    private record MultiQuery(string ObjectName, string Name)
-    {
-        public string? Fields { get; set; } = string.Empty;
-        public List<string> Filters { get; set; } = [string.Empty];
-        public int? From { get; set; } = 0;
-        public int? Take { get; set; } = 0;
-        public bool Pageable { get; set; } = false;
-    }
-
     private async Task<IEnumerable<T>> SendIGDBRequest<T>(string url, string requestBody)
     {
         using HttpClient client = new();
@@ -129,11 +129,9 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
 
         HttpResponseMessage IGDBResponse = await client.PostAsync(url, new StringContent(requestBody));
         string content = await IGDBResponse.Content.ReadAsStringAsync();
-
         if (content == "") return [];
 
         IGDBResponse.EnsureSuccessStatusCode();
-
 
         var responseFound = JsonConvert.DeserializeObject<IEnumerable<T>>(content, new JsonSerializerSettings())
             ?? throw new ExternalAPIException("Falha ao converter JSON");
@@ -158,4 +156,13 @@ public class IGDBService(IGDBTokenService tokenService, IConfiguration configura
         .FieldsByObject
         .GetValueOrDefault(_object)
         .Contains(field));
+
+    private record MultiQuery(string ObjectName, string Name)
+    {
+        public string? Fields { get; set; } = string.Empty;
+        public List<string> Filters { get; set; } = [string.Empty];
+        public int? From { get; set; } = 0;
+        public int? Take { get; set; } = 0;
+        public bool Pageable { get; set; } = false;
+    }
 }

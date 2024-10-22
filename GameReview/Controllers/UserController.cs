@@ -1,14 +1,17 @@
 ﻿using GameReview.Data.DTOs.User;
 using GameReview.Services.Impl;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GameReview.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(UserService service) : ControllerBase
+public class UserController(UserService service, BlobService blobService) : ControllerBase
 {
     private readonly UserService _service = service;
+    private readonly BlobService _blobService = blobService;
 
     [HttpPost]
     public async Task<IActionResult> PostUser(InUserDTO dto)
@@ -25,10 +28,30 @@ public class UserController(UserService service) : ControllerBase
         return Ok(token);
     }
 
-    [HttpPut("{id}")]
-    public IActionResult UpdateUser(InPutUserDTO dto, string id)
+    [Authorize]
+    [HttpPut()]
+    public IActionResult UpdateUser(InPutUserDTO dto)
     {
-        _service.Update(dto, id);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        _service.Update(dto, userId);
+
+        return Ok();
+    }
+               
+    [Authorize]
+    [HttpPut("user-profile-picture")]
+    public IActionResult UploadFile([FromForm] IFormFile file)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        string url = blobService.UploadFile(file).Result;
+
+        _service.UpdateProfilePicture(url, userId);
 
         return Ok();
     }

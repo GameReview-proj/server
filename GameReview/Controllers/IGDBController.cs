@@ -14,7 +14,7 @@ public class IgdbController(IGDBService service) : ControllerBase
     private readonly IGDBService _service = service;
 
     [HttpGet("game")]
-    public IActionResult GetGamesByName([FromQuery] string? name,
+    public IActionResult GetGames([FromQuery] string? name,
         [FromQuery] List<string>? fields,
         [FromQuery] List<int>? genres,
         [FromQuery] List<int>? platforms,
@@ -48,9 +48,9 @@ public class IgdbController(IGDBService service) : ControllerBase
     }
 
     [HttpGet("platform")]
-    public IActionResult GetPlatforms([FromQuery] List<string>? fields)
+    public IActionResult GetPlatforms([FromQuery] List<string>? fields, [FromQuery] string? name)
     {
-        var platformsFound = _service.GetPlatforms(fields);
+        var platformsFound = _service.GetPlatforms(fields, name);
 
         if (platformsFound.IsNullOrEmpty()) return NoContent();
 
