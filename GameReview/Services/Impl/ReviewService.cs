@@ -32,11 +32,13 @@ public class ReviewService(DatabaseContext context) : IReviewService
             ?? throw new NotFoundException($"Review não encontrado com id: {id}");
     }
 
-    public IEnumerable<Review> GetByUserIdExternalId(string? userId, string? externalId)
+    public IEnumerable<Review> GetByUserIdExternalId(string? userId, string? externalId, int from, int take)
     {
         var reviewsFound = _context.Reviews.Where(r =>
             (string.IsNullOrEmpty(userId) || r.User.Id == userId) &&
-            (string.IsNullOrEmpty(externalId) || r.ExternalId == externalId));
+            (string.IsNullOrEmpty(externalId) || r.ExternalId == externalId))
+            .Skip(from)
+            .Take(take);
 
         return [.. reviewsFound];
     }

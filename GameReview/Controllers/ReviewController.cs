@@ -37,9 +37,9 @@ public class ReviewController(ReviewService service) : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetByUserIdExternalId([FromQuery] string? userId, [FromQuery] string? externalId)
+    public IActionResult GetByUserIdExternalId([FromQuery] string? userId, [FromQuery] string? externalId, int from = 0, int take = 20)
     {
-        var reviewsFound = _service.GetByUserIdExternalId(userId, externalId);
+        var reviewsFound = _service.GetByUserIdExternalId(userId, externalId, from, take);
 
         var reviewsDTOs = reviewsFound.Select(ReviewAdapter.ToReviewDTO).ToList();
 
