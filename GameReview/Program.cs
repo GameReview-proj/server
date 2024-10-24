@@ -40,6 +40,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<CommentaryService>();
+builder.Services.AddScoped<FollowService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IGDBService>();
 builder.Services.AddSingleton<IGDBTokenService>();

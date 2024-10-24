@@ -9,7 +9,7 @@ public class Follow
     public DateTime CreatedDate { get; set; }
     public string FollowerId { get; set; }
     public virtual User? Follower { get; set; }
-    public string FollowingId { get; set; }
-    public virtual User? Following { get; set; }
+    public string FollowedId { get; set; }
+    public virtual User? Followed { get; set; }
     public virtual List<Notification> Notifications { get; set; } = [];
 }
