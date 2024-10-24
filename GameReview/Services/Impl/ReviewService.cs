@@ -4,7 +4,7 @@ using GameReview.Data.DTOs.Review;
 using GameReview.Models;
 using GameReview.Services.Exceptions;
 
-namespace GameReview.Services;
+namespace GameReview.Services.Impl;
 
 public class ReviewService(DatabaseContext context) : IReviewService
 {
@@ -41,13 +41,23 @@ public class ReviewService(DatabaseContext context) : IReviewService
         return [.. reviewsFound];
     }
 
+    public IEnumerable<Review> GetNewsPage(int from, int take)
+    {
+        var reviewsFound = _context.Reviews
+            .OrderBy(r => r.CreatedDate)
+            .Skip(from)
+            .Take(take);
+
+        return reviewsFound;
+    }
+
     public void Delete(int id)
     {
         var reviewFound = _context.Reviews.FirstOrDefault(r =>
         r.Id.Equals(id))
             ?? throw new NotFoundException($"Review não encontrada com o id: {id}");
 
-        reviewFound.Commentaries.Clear();
+        reviewFound?.Commentaries?.Clear();
         _context.Reviews.Remove(reviewFound);
         _context.SaveChanges();
     }

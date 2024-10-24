@@ -1,6 +1,5 @@
 using GameReview.Data;
 using GameReview.Models;
-using GameReview.Services;
 using GameReview.Services.Exceptions;
 using GameReview.Services.Impl;
 using GameReview.Services.Impl.IGDB;
