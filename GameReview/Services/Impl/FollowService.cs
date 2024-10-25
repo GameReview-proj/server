@@ -1,4 +1,5 @@
 ﻿using GameReview.Data;
+using GameReview.Data.Adapters;
 using GameReview.Models;
 
 namespace GameReview.Services.Impl;
@@ -10,14 +11,10 @@ public class FollowService(DatabaseContext context, UserService userService) : I
 
     public Follow FollowUser(string followerId, string followedId)
     {
-        var follower = _userService.GetById(followerId);
-        var followed = _userService.GetById(followedId);
-
-        Follow newFollow = new()
-        { 
-            Followed = followed,
-            Follower = follower
-        };
+        var newFollow = FollowAdapter.ToEntity(
+            _userService.GetById(followerId),
+            _userService.GetById(followedId)
+        );
 
         _context.Follows.Add(newFollow);
         _context.SaveChanges();
