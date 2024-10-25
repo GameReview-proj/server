@@ -1,9 +1,10 @@
 ﻿using GameReview.Data.Adapters;
 using GameReview.Data.DTOs.Review;
 using GameReview.Models;
-using GameReview.Services;
+using GameReview.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace GameReview.Controllers;
@@ -36,9 +37,21 @@ public class ReviewController(ReviewService service) : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetByUserIdExternalId([FromQuery] string? userId, [FromQuery] string? externalId)
+    public IActionResult GetByUserIdExternalId([FromQuery] string? userId, [FromQuery] string? externalId, int from = 0, int take = 20)
     {
-        var reviewsFound = _service.GetByUserIdExternalId(userId, externalId);
+        var reviewsFound = _service.GetByUserIdExternalId(userId, externalId, from, take);
+
+        var reviewsDTOs = reviewsFound.Select(ReviewAdapter.ToReviewDTO).ToList();
+
+        return Ok(reviewsDTOs);
+    }
+
+    [HttpGet("news")]
+    public IActionResult GetNewsPage([FromQuery] int from = 0, [FromQuery] int take = 20)
+    {
+        var reviewsFound = _service.GetNewsPage(from, take);
+
+        if (reviewsFound.IsNullOrEmpty()) return NoContent();
 
         var reviewsDTOs = reviewsFound.Select(ReviewAdapter.ToReviewDTO).ToList();
 

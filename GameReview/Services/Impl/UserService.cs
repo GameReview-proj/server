@@ -72,4 +72,10 @@ public class UserService(UserManager<User> userManager,
 
         return userFound;
     }
+
+    // INTERNAL
+    public User GetById(string id)
+    {
+        return _context.Users.FirstOrDefault(u => u.Id.Equals(id)) ?? throw new NotFoundException($"Usuário não encontrado com o id: {id}");
+    }
 }

@@ -16,14 +16,14 @@ public class DatabaseContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<Follow>()
-            .HasOne(f => f.Follower)
+            .HasOne(f => f.Followed)
             .WithMany(u => u.Followers)
             .HasForeignKey("FollowerId");
 
         builder.Entity<Follow>()
-            .HasOne(f => f.Following)
+            .HasOne(f => f.Follower)
             .WithMany(u => u.Following)
-            .HasForeignKey("FollowingId");
+            .HasForeignKey("FollowedId");
 
         builder.Entity<Notification>()
             .HasOne(n => n.RelatedUser)
