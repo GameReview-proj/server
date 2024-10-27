@@ -1,3 +1,4 @@
+using GameReview.Builders.Impl;
 using GameReview.Data;
 using GameReview.Models;
 using GameReview.Services.Exceptions;
@@ -44,6 +45,11 @@ builder.Services.AddScoped<FollowService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IGDBService>();
 builder.Services.AddSingleton<IGDBTokenService>();
+
+builder.Services.AddScoped<UserBuilder>();
+builder.Services.AddScoped<ReviewBuilder>();
+builder.Services.AddScoped<FollowBuilder>();
+builder.Services.AddScoped<CommentaryBuilder>();
 
 builder.Services
     .AddIdentity<User, IdentityRole>()

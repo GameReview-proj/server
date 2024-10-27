@@ -1,4 +1,4 @@
-﻿using GameReview.Data.DTOs.Review;
+﻿using GameReview.DTOs.Review;
 using GameReview.Models;
 
 namespace GameReview.Services;

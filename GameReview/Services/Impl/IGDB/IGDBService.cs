@@ -1,5 +1,5 @@
-﻿using GameReview.Data.DTOs.IGDB;
-using GameReview.Data.JsonObjects;
+﻿using GameReview.DTOs.IGDB;
+using GameReview.DTOs.JsonObjects;
 using GameReview.Services.Exceptions;
 using GameReview.Services.Util;
 using Microsoft.IdentityModel.Tokens;

@@ -1,6 +1,5 @@
-﻿using GameReview.Data.Adapters;
-using GameReview.Data.DTOs.Review;
-using GameReview.Models;
+﻿using GameReview.Data.DTOs.Review;
+using GameReview.DTOs.Review;
 using GameReview.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +32,11 @@ public class ReviewController(ReviewService service) : ControllerBase
     {
         var reviewFound = _service.GetById(id);
 
-        return Ok(ReviewAdapter.ToReviewUserDTO(reviewFound));
+        return Ok(new OutReviewDTO(reviewFound.Id,
+            reviewFound.Stars,
+            reviewFound.Description,
+            reviewFound.ExternalId,
+            reviewFound.CreatedDate));
     }
 
     [HttpGet]
@@ -41,7 +44,15 @@ public class ReviewController(ReviewService service) : ControllerBase
     {
         var reviewsFound = _service.GetByUserIdExternalId(userId, externalId, from, take);
 
-        var reviewsDTOs = reviewsFound.Select(ReviewAdapter.ToReviewDTO).ToList();
+        var reviewsDTOs = reviewsFound
+            .Select(r => new OutReviewDTO(
+                r.Id,
+                r.Stars,
+                r.Description,
+                r.ExternalId,
+                r.CreatedDate
+            ))
+            .ToList();
 
         return Ok(reviewsDTOs);
     }
@@ -53,7 +64,15 @@ public class ReviewController(ReviewService service) : ControllerBase
 
         if (reviewsFound.IsNullOrEmpty()) return NoContent();
 
-        var reviewsDTOs = reviewsFound.Select(ReviewAdapter.ToReviewDTO).ToList();
+        var reviewsDTOs = reviewsFound
+            .Select(r => new OutReviewDTO(
+                r.Id,
+                r.Stars,
+                r.Description,
+                r.ExternalId,
+                r.CreatedDate
+            ))
+            .ToList();
 
         return Ok(reviewsDTOs);
     }

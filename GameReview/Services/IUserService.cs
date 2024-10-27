@@ -1,4 +1,4 @@
-﻿using GameReview.Data.DTOs.User;
+﻿using GameReview.DTOs.User;
 using GameReview.Models;
 
 namespace GameReview.Services;

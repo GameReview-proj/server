@@ -1,22 +1,29 @@
-﻿using GameReview.Data;
-using GameReview.Data.Adapters;
-using GameReview.Data.DTOs.Review;
+﻿using GameReview.Builders.Impl;
+using GameReview.Data;
+using GameReview.DTOs.Review;
 using GameReview.Models;
 using GameReview.Services.Exceptions;
 
 namespace GameReview.Services.Impl;
 
-public class ReviewService(DatabaseContext context) : IReviewService
+public class ReviewService(DatabaseContext context, 
+    ReviewBuilder builder,
+    UserService userService) : IReviewService
 {
     private readonly DatabaseContext _context = context;
+    private readonly ReviewBuilder _builder = builder;
+    private readonly UserService _userService = userService;
+
     public Review Create(InReviewDTO dto, string userId)
     {
-        var userFound = _context
-                .Users
-                .FirstOrDefault(u => u.Id.Equals(userId))
-        ?? throw new NotFoundException($"Usuário não encontrado com o id: {userId}");
+        var userFound = _userService.GetById(userId);
 
-        Review newReview = ReviewAdapter.ToEntity(dto, userFound);
+        var newReview = _builder
+            .SetDescription(dto.Description)
+            .SetExternalId(dto.ExternalId)
+            .SetStars(dto.Stars)
+            .SetUser(userFound)
+            .Build();
 
         _context.Add(newReview);
         _context.SaveChanges();
