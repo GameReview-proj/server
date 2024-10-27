@@ -1,4 +1,4 @@
-﻿using GameReview.Data.JsonObjects;
+﻿using GameReview.DTOs.JsonObjects;
 using Newtonsoft.Json;
 
 namespace GameReview.Services.Impl.IGDB;

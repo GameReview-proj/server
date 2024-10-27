@@ -1,5 +1,5 @@
+using GameReview.Builders.Impl;
 using GameReview.Data;
-using GameReview.Data.Builders.Impl;
 using GameReview.Models;
 using GameReview.Services.Exceptions;
 using GameReview.Services.Impl;

@@ -1,5 +1,6 @@
 ﻿using GameReview.Data.Builders.Impl;
 using GameReview.Data.DTOs.Commentary;
+using GameReview.DTOs.Commentary;
 using GameReview.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

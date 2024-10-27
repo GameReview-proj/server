@@ -1,4 +1,5 @@
 ﻿using GameReview.Data.DTOs.Review;
+using GameReview.DTOs.Review;
 using GameReview.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

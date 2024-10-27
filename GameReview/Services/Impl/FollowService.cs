@@ -1,5 +1,5 @@
-﻿using GameReview.Data;
-using GameReview.Data.Builders.Impl;
+﻿using GameReview.Builders.Impl;
+using GameReview.Data;
 using GameReview.Models;
 
 namespace GameReview.Services.Impl;

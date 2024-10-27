@@ -1,6 +1,6 @@
-﻿using GameReview.Data;
-using GameReview.Data.Builders.Impl;
-using GameReview.Data.DTOs.Commentary;
+﻿using GameReview.Builders.Impl;
+using GameReview.Data;
+using GameReview.DTOs.Commentary;
 using GameReview.Models;
 using GameReview.Services.Exceptions;
 

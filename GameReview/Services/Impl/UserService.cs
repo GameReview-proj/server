@@ -1,6 +1,6 @@
-﻿using GameReview.Data;
-using GameReview.Data.Builders.Impl;
-using GameReview.Data.DTOs.User;
+﻿using GameReview.Builders.Impl;
+using GameReview.Data;
+using GameReview.DTOs.User;
 using GameReview.Models;
 using GameReview.Services.Exceptions;
 using Microsoft.AspNetCore.Identity;

@@ -1,4 +1,4 @@
-﻿using GameReview.Data.DTOs.IGDB;
+﻿using GameReview.DTOs.IGDB;
 
 namespace GameReview.Services;
 

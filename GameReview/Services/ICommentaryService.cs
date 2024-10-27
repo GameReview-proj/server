@@ -1,4 +1,4 @@
-﻿using GameReview.Data.DTOs.Commentary;
+﻿using GameReview.DTOs.Commentary;
 using GameReview.Models;
 
 namespace GameReview.Services;
