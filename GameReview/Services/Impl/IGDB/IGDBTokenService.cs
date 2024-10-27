@@ -1,5 +1,4 @@
-﻿using GameReview.Data.Adapters;
-using GameReview.Data.JsonObjects;
+﻿using GameReview.Data.JsonObjects;
 using Newtonsoft.Json;
 
 namespace GameReview.Services.Impl.IGDB;

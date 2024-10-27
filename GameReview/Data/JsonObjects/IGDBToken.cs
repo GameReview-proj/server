@@ -10,13 +10,6 @@ public class IGDBToken()
     public long ExpiresIn { get; set; }
     public DateTime GeneratedDate { get; } = DateTime.Now;
 
-    public override string ToString()
-    {
-        return $"AccessToken - {AccessToken}\n" +
-            $"ExpiresIn - {ExpiresIn}\n" +
-            $"GeneratedDate - {GeneratedDate}\n";
-    }
-
     public bool EnsureTokenNotExpired()
     {
         return !string.IsNullOrEmpty(AccessToken) && GeneratedDate.AddSeconds(ExpiresIn) > DateTime.Now;

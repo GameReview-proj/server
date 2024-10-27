@@ -1,4 +1,4 @@
-﻿using GameReview.Data.Adapters;
+﻿using GameReview.Data.Builders.Impl;
 using GameReview.Data.DTOs.Commentary;
 using GameReview.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
@@ -36,7 +36,7 @@ public class CommentaryController(CommentaryService service) : ControllerBase
             return NoContent();
 
         return Ok(commentariesFound
-            .Select(CommentaryAdapter.ToCommentaryDTO)
+            .Select(c => new OutCommentaryDTO(c.Id, c.Comment, c.CreatedDate))
             .ToList());
     }
 

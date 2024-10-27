@@ -1,38 +1,24 @@
 ﻿using GameReview.Data;
-using GameReview.Data.Adapters;
+using GameReview.Data.Builders.Impl;
 using GameReview.Data.DTOs.Commentary;
 using GameReview.Models;
 using GameReview.Services.Exceptions;
 
 namespace GameReview.Services.Impl;
 
-public class CommentaryService(DatabaseContext context) : ICommentaryService
+public class CommentaryService(DatabaseContext context,
+    CommentaryBuilder builder,
+    UserService userService) : ICommentaryService
 {
     private readonly DatabaseContext _context = context;
+    private readonly CommentaryBuilder _builder = builder;
+    private readonly UserService _userService = userService;
 
     public Commentary Create(InCommentaryDTO dto, string userId)
     {
-        if (dto.CommentaryId != null && dto.CommentaryId != 0 && (dto.ReviewId != null || dto.ReviewId == 0))
-            throw new BadRequestException("Um comentário só pode ser atribuído a uma avaliação OU comentário");
+        CheckCommentary(dto);
 
-        if (dto.CommentaryId != null && dto.CommentaryId != 0 && !_context
-                .Commentaries
-                .Any(r => r.Id.Equals(dto.CommentaryId)))
-        {
-            throw new NotFoundException($"Nenhum comentário encontrado com o id: {dto.CommentaryId}");
-        }
-
-        if ((dto.ReviewId != null || dto.ReviewId == 0) && !_context
-                .Reviews
-                .Any(r => r.Id.Equals(dto.ReviewId)))
-        {
-            throw new NotFoundException($"Nenhum comentário encontrado com o id: {dto.CommentaryId}");
-        }
-
-        User user = _context
-            .Users
-            .FirstOrDefault(r => r.Id.Equals(userId))
-        ?? throw new NotFoundException($"Usuário não encontrado com o id: {userId}");
+        User user = _userService.GetById(userId);
 
         Review? reviewFound = _context
             .Reviews
@@ -42,7 +28,11 @@ public class CommentaryService(DatabaseContext context) : ICommentaryService
             .Commentaries
             .FirstOrDefault(r => r.Id.Equals(dto.CommentaryId));
 
-        Commentary newCommentary = CommentaryAdapter.ToEntity(dto, user, commentaryFound, reviewFound);
+        Commentary newCommentary = _builder
+            .SetComment(dto.Comment)
+            .SetLink(commentaryFound, reviewFound)
+            .SetUser(user)
+            .Build();
 
         _context.Commentaries.Add(newCommentary);
         _context.SaveChanges();
@@ -81,5 +71,25 @@ public class CommentaryService(DatabaseContext context) : ICommentaryService
             .Commentaries
             .Remove(commentaryFound);
         _context.SaveChanges();
+    }
+
+    public void CheckCommentary(InCommentaryDTO dto)
+    {
+        if (dto.CommentaryId != null && dto.CommentaryId != 0 && (dto.ReviewId != null || dto.ReviewId == 0))
+            throw new BadRequestException("Um comentário só pode ser atribuído a uma avaliação OU comentário");
+
+        if (dto.CommentaryId != null && dto.CommentaryId != 0 && !_context
+                .Commentaries
+                .Any(r => r.Id.Equals(dto.CommentaryId)))
+        {
+            throw new NotFoundException($"Nenhum comentário encontrado com o id: {dto.CommentaryId}");
+        }
+
+        if ((dto.ReviewId != null || dto.ReviewId == 0) && !_context
+                .Reviews
+                .Any(r => r.Id.Equals(dto.ReviewId)))
+        {
+            throw new NotFoundException($"Nenhum comentário encontrado com o id: {dto.CommentaryId}");
+        }
     }
 }

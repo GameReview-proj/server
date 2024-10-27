@@ -6,7 +6,7 @@ public class Commentary
 {
     [Key]
     public int Id { get; set; }
-    public required string Comment { get; set; }
+    public string Comment { get; set; }
     public DateTime CreatedDate { get; set; }
     public virtual User? User { get; set; }
     public virtual Review? Review { get; set; }
