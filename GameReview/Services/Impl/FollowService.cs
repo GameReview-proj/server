@@ -1,6 +1,7 @@
 ﻿using GameReview.Builders.Impl;
 using GameReview.Models;
 using GameReview.Repositories.Impl;
+using GameReview.Services.Exceptions;
 
 namespace GameReview.Services.Impl;
 
@@ -14,6 +15,8 @@ public class FollowService(FollowRepository repository,
 
     public Follow FollowUser(string followerId, string followedId)
     {
+        if (_repository.GetByFollowerIdFollowedId(followerId, followedId) is not null) throw new ConflictException($"Usuário de Id {followerId} já segue usuário de Id {followedId}");
+
         var newFollow = _builder
             .SetFollowed(_userService.GetById(followedId))
             .SetFollower(_userService.GetById(followerId))
