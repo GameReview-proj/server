@@ -1,14 +1,14 @@
 ﻿using GameReview.Builders.Impl;
-using GameReview.Data;
 using GameReview.Models;
+using GameReview.Repositories.Impl;
 
 namespace GameReview.Services.Impl;
 
-public class FollowService(DatabaseContext context,
+public class FollowService(FollowRepository repository,
     UserService userService,
     FollowBuilder builder) : IFollowService
 {
-    private readonly DatabaseContext _context = context;
+    private readonly FollowRepository _repository = repository;
     private readonly FollowBuilder _builder = builder;
     private readonly UserService _userService = userService;
 
@@ -19,8 +19,7 @@ public class FollowService(DatabaseContext context,
             .SetFollower(_userService.GetById(followerId))
             .Build();
 
-        _context.Follows.Add(newFollow);
-        _context.SaveChanges();
+        _repository.Add(newFollow);
 
         return newFollow;
     }

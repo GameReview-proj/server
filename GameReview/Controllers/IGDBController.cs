@@ -1,8 +1,7 @@
-﻿using GameReview.Data.DTOs.IGDB;
-using GameReview.Services.Impl.IGDB;
-using Microsoft.AspNetCore.Authorization;
+﻿using GameReview.Services.Impl.IGDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using GameReview.DTOs.IGDB;
 
 namespace GameReview.Controllers;
 
