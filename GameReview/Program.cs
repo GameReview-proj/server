@@ -1,6 +1,7 @@
 using GameReview.Builders.Impl;
 using GameReview.Data;
 using GameReview.Models;
+using GameReview.Repositories.Impl;
 using GameReview.Services.Exceptions;
 using GameReview.Services.Impl;
 using GameReview.Services.Impl.IGDB;
@@ -37,6 +38,7 @@ builder.Services.AddDbContext<DatabaseContext>(opts =>
         .UseLazyLoadingProxies();
 });
 
+// SERVICES
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddScoped<ReviewService>();
@@ -46,10 +48,17 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IGDBService>();
 builder.Services.AddSingleton<IGDBTokenService>();
 
+// BUILDERS
 builder.Services.AddScoped<UserBuilder>();
 builder.Services.AddScoped<ReviewBuilder>();
 builder.Services.AddScoped<FollowBuilder>();
 builder.Services.AddScoped<CommentaryBuilder>();
+
+// REPOSITORIES
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<ReviewRepository>();
+builder.Services.AddScoped<FollowRepository>();
+builder.Services.AddScoped<CommentaryRepository>();
 
 builder.Services
     .AddIdentity<User, IdentityRole>()

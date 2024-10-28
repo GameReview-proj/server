@@ -11,11 +11,13 @@ namespace GameReview.Controllers;
 public class FollowController(FollowService service) : ControllerBase
 {
     private readonly FollowService _service = service;
-    
+
     [HttpPost]
     public IActionResult FollowUser([FromQuery] string followedId)
     {
         var followerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        if (followerId is null) return Unauthorized();
 
         _service.FollowUser(followerId, followedId);
 

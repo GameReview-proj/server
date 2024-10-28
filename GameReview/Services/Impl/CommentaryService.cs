@@ -2,31 +2,34 @@
 using GameReview.Data;
 using GameReview.DTOs.Commentary;
 using GameReview.Models;
+using GameReview.Repositories.Impl;
 using GameReview.Services.Exceptions;
 
 namespace GameReview.Services.Impl;
 
-public class CommentaryService(DatabaseContext context,
+public class CommentaryService(CommentaryRepository repository,
     CommentaryBuilder builder,
-    UserService userService) : ICommentaryService
+    UserService userService,
+    ReviewService reviewService) : ICommentaryService
 {
-    private readonly DatabaseContext _context = context;
+    private readonly CommentaryRepository _repository = repository;
     private readonly CommentaryBuilder _builder = builder;
     private readonly UserService _userService = userService;
+    private readonly ReviewService _reviewService = reviewService;
 
     public Commentary Create(InCommentaryDTO dto, string userId)
     {
-        CheckCommentary(dto);
+        ValidateCommentary(dto);
 
         User user = _userService.GetById(userId);
 
-        Review? reviewFound = _context
-            .Reviews
-            .FirstOrDefault(r => r.Id.Equals(dto.ReviewId));
+        Commentary? commentaryFound = dto.CommentaryId != null && dto.CommentaryId != 0
+            ? _repository.GetById(dto.CommentaryId)
+            : null;
 
-        Commentary? commentaryFound = _context
-            .Commentaries
-            .FirstOrDefault(r => r.Id.Equals(dto.CommentaryId));
+        Review? reviewFound = dto.ReviewId != null && dto.ReviewId != 0
+            ? _reviewService.GetById((int)dto.ReviewId)
+            : null;
 
         Commentary newCommentary = _builder
             .SetComment(dto.Comment)
@@ -34,62 +37,41 @@ public class CommentaryService(DatabaseContext context,
             .SetUser(user)
             .Build();
 
-        _context.Commentaries.Add(newCommentary);
-        _context.SaveChanges();
+        _repository.Add(newCommentary);
 
         return newCommentary;
     }
 
+    private static void ValidateCommentary(InCommentaryDTO dto)
+    {
+        bool hasCommentaryId = dto.CommentaryId != null && dto.CommentaryId != 0;
+        bool hasReviewId = dto.ReviewId != null && dto.ReviewId != 0;
+
+        if (hasCommentaryId && hasReviewId)
+        {
+            throw new BadRequestException("Um comentário só pode ser atribuído a uma avaliação OU a um comentário.");
+        }
+    }
+
+
     public IEnumerable<Commentary> GetByReviewIdExternalIdUserId(int? reviewId, string? externalId, string? userId)
     {
-        var commentariesFound = _context
-            .Commentaries
-            .Where(r =>
-                (!reviewId.HasValue || r.Review.Id.Equals(reviewId)) &&
-                (string.IsNullOrEmpty(externalId) || r.Review.ExternalId.Equals(externalId) &&
-                (string.IsNullOrEmpty(userId) || r.User.Id.Equals(userId)))
-            );
+        var commentariesFound = _repository.GetByReviewIdExternalIdUserId(reviewId, externalId, userId);
 
         return [.. commentariesFound];
     }
 
     public Commentary GetById(int id)
     {
-        Commentary commentaryFound = _context
-            .Commentaries
-            .FirstOrDefault(c => c.Id.Equals(id))
-        ?? throw new NotFoundException($"Comentário não encontrado com o ID: {id}");
+        Commentary commentaryFound = _repository.GetById(id);
 
         return commentaryFound;
     }
 
     public void Delete(int id)
     {
-        Commentary commentaryFound = GetById(id);
+        var commentaryFound = _repository.GetById(id);
 
-        _context
-            .Commentaries
-            .Remove(commentaryFound);
-        _context.SaveChanges();
-    }
-
-    public void CheckCommentary(InCommentaryDTO dto)
-    {
-        if (dto.CommentaryId != null && dto.CommentaryId != 0 && (dto.ReviewId != null || dto.ReviewId == 0))
-            throw new BadRequestException("Um comentário só pode ser atribuído a uma avaliação OU comentário");
-
-        if (dto.CommentaryId != null && dto.CommentaryId != 0 && !_context
-                .Commentaries
-                .Any(r => r.Id.Equals(dto.CommentaryId)))
-        {
-            throw new NotFoundException($"Nenhum comentário encontrado com o id: {dto.CommentaryId}");
-        }
-
-        if ((dto.ReviewId != null || dto.ReviewId == 0) && !_context
-                .Reviews
-                .Any(r => r.Id.Equals(dto.ReviewId)))
-        {
-            throw new NotFoundException($"Nenhum comentário encontrado com o id: {dto.CommentaryId}");
-        }
+        _repository.Delete(commentaryFound);
     }
 }

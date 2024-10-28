@@ -1,7 +1,6 @@
 ﻿using GameReview.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace GameReview.Data;
 
@@ -18,12 +17,12 @@ public class DatabaseContext : IdentityDbContext<User>
         builder.Entity<Follow>()
             .HasOne(f => f.Followed)
             .WithMany(u => u.Followers)
-            .HasForeignKey("FollowerId");
+            .HasForeignKey(f => f.FollowedId);
 
         builder.Entity<Follow>()
             .HasOne(f => f.Follower)
             .WithMany(u => u.Following)
-            .HasForeignKey("FollowedId");
+            .HasForeignKey(f => f.FollowerId);
 
         builder.Entity<Notification>()
             .HasOne(n => n.RelatedUser)

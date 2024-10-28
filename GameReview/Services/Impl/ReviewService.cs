@@ -2,15 +2,16 @@
 using GameReview.Data;
 using GameReview.DTOs.Review;
 using GameReview.Models;
+using GameReview.Repositories.Impl;
 using GameReview.Services.Exceptions;
 
 namespace GameReview.Services.Impl;
 
-public class ReviewService(DatabaseContext context, 
+public class ReviewService(ReviewRepository repository,
     ReviewBuilder builder,
     UserService userService) : IReviewService
 {
-    private readonly DatabaseContext _context = context;
+    private readonly ReviewRepository _repository = repository;
     private readonly ReviewBuilder _builder = builder;
     private readonly UserService _userService = userService;
 
@@ -25,49 +26,33 @@ public class ReviewService(DatabaseContext context,
             .SetUser(userFound)
             .Build();
 
-        _context.Add(newReview);
-        _context.SaveChanges();
+        _repository.Add(newReview);
 
         return newReview;
     }
 
     public Review GetById(int id)
     {
-        return _context
-            .Reviews
-            .FirstOrDefault(r => r.Id.Equals(id))
-            ?? throw new NotFoundException($"Review não encontrado com id: {id}");
+        return _repository.GetById(id);
     }
 
     public IEnumerable<Review> GetByUserIdExternalId(string? userId, string? externalId, int from, int take)
     {
-        var reviewsFound = _context.Reviews.Where(r =>
-            (string.IsNullOrEmpty(userId) || r.User.Id == userId) &&
-            (string.IsNullOrEmpty(externalId) || r.ExternalId == externalId))
-            .Skip(from)
-            .Take(take);
+        var reviewsFound = _repository.GetByUserIdExternalId(userId, externalId, from, take);
 
         return [.. reviewsFound];
     }
 
     public IEnumerable<Review> GetNewsPage(int from, int take)
     {
-        var reviewsFound = _context.Reviews
-            .OrderBy(r => r.CreatedDate)
-            .Skip(from)
-            .Take(take);
+        var reviewsFound = _repository.GetNewsPageable(from, take);
 
         return reviewsFound;
     }
 
     public void Delete(int id)
     {
-        var reviewFound = _context.Reviews.FirstOrDefault(r =>
-        r.Id.Equals(id))
-            ?? throw new NotFoundException($"Review não encontrada com o id: {id}");
-
-        reviewFound?.Commentaries?.Clear();
-        _context.Reviews.Remove(reviewFound);
-        _context.SaveChanges();
+        var reviewFound = _repository.GetById(id);
+        _repository.Delete(reviewFound);
     }
 }
