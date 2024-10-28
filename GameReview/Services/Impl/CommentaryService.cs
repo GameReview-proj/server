@@ -70,8 +70,6 @@ public class CommentaryService(CommentaryRepository repository,
 
     public void Delete(int id)
     {
-        var commentaryFound = _repository.GetById(id);
-
-        _repository.Delete(commentaryFound);
+        _repository.Delete(id);
     }
 }
