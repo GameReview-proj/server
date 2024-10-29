@@ -27,6 +27,16 @@ public class FollowService(FollowRepository repository,
         return newFollow;
     }
 
+    public IEnumerable<Follow> GetFollowers(string userId)
+    {
+        return _repository.GetFollowers(userId);
+    }
+
+    public IEnumerable<Follow> GetFollowings(string userId)
+    {
+        return _repository.GetFollowings(userId);
+    }
+
     public void UnfollowUser(string followerId, string followedId)
     {
         var followFound = _repository.GetByFollowerIdFollowedId(followerId, followedId) ?? throw new NotFoundException($"Usuário de Id {followerId} não segue o usuário de Id {followedId}");
