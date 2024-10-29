@@ -52,7 +52,6 @@ public class ReviewService(ReviewRepository repository,
 
     public void Delete(int id)
     {
-        var reviewFound = _repository.GetById(id);
-        _repository.Delete(reviewFound);
+        _repository.Delete(id);
     }
 }
