@@ -29,7 +29,18 @@ public class UserController(UserService service, BlobService blobService) : Cont
     }
 
     [Authorize]
-    [HttpPut()]
+    [HttpGet]
+    public IActionResult GetUserInfo([FromQuery] string? userId)
+    {
+        var _userId = userId is null ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value : userId;
+
+        var userFound = _service.ExternalGetById(_userId);
+
+        return Ok(new OutUserDTO(userFound));
+    }
+
+    [Authorize]
+    [HttpPut]
     public IActionResult UpdateUser(InPutUserDTO dto)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -40,7 +51,7 @@ public class UserController(UserService service, BlobService blobService) : Cont
 
         return Ok();
     }
-               
+
     [Authorize]
     [HttpPut("user-profile-picture")]
     public IActionResult UploadFile([FromForm] IFormFile file)
@@ -49,7 +60,7 @@ public class UserController(UserService service, BlobService blobService) : Cont
 
         if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-        string url = blobService.UploadFile(file).Result;
+        string url = _blobService.UploadFile(file).Result;
 
         _service.UpdateProfilePicture(url, userId);
 

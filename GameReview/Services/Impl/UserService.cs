@@ -58,6 +58,11 @@ public class UserService(UserManager<User> userManager,
         return token;
     }
 
+    public User ExternalGetById(string id)
+    {
+        return _repository.GetById(id) ?? throw new NotFoundException($"Usuário não encontrado com o id: {id}");
+    }
+
     public User Update(InPutUserDTO dto, string id)
     {
         var userFound = GetById(id);
@@ -81,7 +86,8 @@ public class UserService(UserManager<User> userManager,
         return userFound;
     }
 
-    // INTERNAL
+
+
     public User GetById(string id)
     {
         return _repository.GetById(id);
