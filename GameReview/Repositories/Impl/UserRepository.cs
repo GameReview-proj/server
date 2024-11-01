@@ -9,4 +9,9 @@ public class UserRepository(DatabaseContext context) : Repository<User>(context)
     {
         return _dbSet.FirstOrDefault(u => u.Email == email);
     }
+
+    public User? GetByUsername(string username)
+    {
+        return _dbSet.FirstOrDefault(u => u.UserName == username);
+    }
 }
