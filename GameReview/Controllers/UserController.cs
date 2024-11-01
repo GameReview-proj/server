@@ -3,15 +3,18 @@ using GameReview.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
+using GameReview.Data.Caching.Impl;
 
 namespace GameReview.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(UserService service, BlobService blobService) : ControllerBase
+public class UserController(UserService service, BlobService blobService, CachingService cacheService) : ControllerBase
 {
     private readonly UserService _service = service;
     private readonly BlobService _blobService = blobService;
+    private readonly CachingService _cacheService = cacheService;
 
     [HttpPost]
     public async Task<IActionResult> PostUser(InUserDTO dto)
@@ -32,11 +35,28 @@ public class UserController(UserService service, BlobService blobService) : Cont
     [HttpGet]
     public IActionResult GetUserInfo([FromQuery] string? userId)
     {
-        var _userId = userId is null ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value : userId;
+        var effectiveUserId = userId ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var userFound = _service.ExternalGetById(_userId);
+        if (string.IsNullOrEmpty(effectiveUserId)) return Unauthorized();
 
-        return Ok(new OutUserDTO(userFound));
+        var cachedUserDto = _cacheService.Get($"User:{effectiveUserId}");
+
+        OutUserDTO? userDTO;
+
+        if (cachedUserDto is not null)
+        {
+            userDTO = JsonSerializer.Deserialize<OutUserDTO>(cachedUserDto);
+
+            return Ok(userDTO);
+        }
+
+        var userFound = _service.ExternalGetById(effectiveUserId);
+
+        userDTO = new OutUserDTO(userFound);
+
+        _cacheService.Set($"User:{effectiveUserId}", JsonSerializer.Serialize(userDTO));
+
+        return Ok(userDTO);
     }
 
     [Authorize]

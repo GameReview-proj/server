@@ -1,5 +1,6 @@
 using GameReview.Builders.Impl;
 using GameReview.Data;
+using GameReview.Data.Caching.Impl;
 using GameReview.Models;
 using GameReview.Repositories.Impl;
 using GameReview.Services.Exceptions;
@@ -46,6 +47,7 @@ builder.Services.AddScoped<CommentaryService>();
 builder.Services.AddScoped<FollowService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IGDBService>();
+builder.Services.AddScoped<CachingService>();
 builder.Services.AddSingleton<IGDBTokenService>();
 
 // BUILDERS
@@ -59,6 +61,12 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<FollowRepository>();
 builder.Services.AddScoped<CommentaryRepository>();
+
+builder.Services.AddStackExchangeRedisCache(o =>
+{
+    o.InstanceName = "GameReview";
+    o.Configuration = "localhost:6379";
+});
 
 builder.Services
     .AddIdentity<User, IdentityRole>()
