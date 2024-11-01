@@ -1,5 +1,4 @@
 ﻿using GameReview.Builders.Impl;
-using GameReview.Data;
 using GameReview.DTOs.User;
 using GameReview.Models;
 using GameReview.Repositories.Impl;
@@ -23,6 +22,7 @@ public class UserService(UserManager<User> userManager,
     public async Task<User> Create(InUserDTO dto)
     {
         if (_repository.GetByEmail(dto.Email) is not null) throw new ConflictException($"Usuário já existente com o email: {dto.Email}");
+        if (_repository.GetByUsername(dto.Username) is not null) throw new ConflictException($"Usuário já existente com o username: {dto.Username}");
 
         var newUser = _builder
             .SetEmail(dto.Email)
@@ -36,9 +36,11 @@ public class UserService(UserManager<User> userManager,
         return newUser;
     }
 
-    public void Delete(int id)
+    public void Delete(string id)
     {
-        throw new NotImplementedException();
+        var userFound = ExternalGetById(id);
+
+        _userManager.DeleteAsync(userFound);
     }
 
     public async Task<string> Login(InLoginDTO dto)
@@ -85,8 +87,6 @@ public class UserService(UserManager<User> userManager,
 
         return userFound;
     }
-
-
 
     public User GetById(string id)
     {

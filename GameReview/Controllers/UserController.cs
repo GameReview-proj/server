@@ -86,4 +86,17 @@ public class UserController(UserService service, BlobService blobService, Cachin
 
         return Ok();
     }
+
+    [Authorize]
+    [HttpDelete]
+    public IActionResult DeleteUser()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        _service.Delete(userId);
+
+        return NoContent();
+    }
 }
