@@ -36,9 +36,11 @@ public class UserService(UserManager<User> userManager,
         return newUser;
     }
 
-    public void Delete(int id)
+    public void Delete(string id)
     {
-        throw new NotImplementedException();
+        var userFound = ExternalGetById(id);
+
+        _userManager.DeleteAsync(userFound);
     }
 
     public async Task<string> Login(InLoginDTO dto)
@@ -85,8 +87,6 @@ public class UserService(UserManager<User> userManager,
 
         return userFound;
     }
-
-
 
     public User GetById(string id)
     {
