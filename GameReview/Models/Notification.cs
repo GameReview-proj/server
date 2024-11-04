@@ -7,6 +7,7 @@ public class Notification
     public int Id { get; set; }
     public DateTime CreatedDate { get; set; }
     public virtual Review? Review { get; set; }
+    public virtual Boolean Readed { get; set; }
     public string UserId { get; set; }
     public virtual User? User { get; set; }
     public string RelatedUserId { get; set; }

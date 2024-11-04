@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
-using GameReview.Data.Caching.Impl;
+using GameReview.Infra.Caching.Impl;
 
 namespace GameReview.Controllers;
 

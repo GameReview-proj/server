@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using GameReview.Infra.Caching;
+using Microsoft.Extensions.Caching.Distributed;
 
-namespace GameReview.Data.Caching.Impl;
+namespace GameReview.Infra.Caching.Impl;
 
 public class CachingService : ICachingService
 {
