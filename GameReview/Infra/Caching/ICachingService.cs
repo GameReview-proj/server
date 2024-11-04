@@ -1,4 +1,4 @@
-﻿namespace GameReview.Data.Caching;
+﻿namespace GameReview.Infra.Caching;
 
 public interface ICachingService
 {

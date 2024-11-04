@@ -1,6 +1,8 @@
 using GameReview.Builders.Impl;
 using GameReview.Data;
-using GameReview.Data.Caching.Impl;
+using GameReview.Infra.Caching.Impl;
+using GameReview.Infra.RabbitMq;
+using GameReview.Infra.SignalR;
 using GameReview.Models;
 using GameReview.Repositories.Impl;
 using GameReview.Services.Exceptions;
@@ -62,6 +64,11 @@ builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<FollowRepository>();
 builder.Services.AddScoped<CommentaryRepository>();
 
+// MESSAGING
+builder.Services.AddSignalR();
+builder.Services.AddTransient<RabbitMqProducer>();
+builder.Services.AddSingleton<RabbitMqConsumer>();
+
 builder.Services.AddStackExchangeRedisCache(o =>
 {
     o.InstanceName = "GameReview";
@@ -81,10 +88,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-app.MapControllers();
 app.UseCors();
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<NotificationHub>("/hub");
+    endpoints.MapControllers();
+});
+
+var consumer = app.Services.GetRequiredService<RabbitMqConsumer>();
 
 app.Run();
