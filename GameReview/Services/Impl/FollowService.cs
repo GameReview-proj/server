@@ -1,4 +1,5 @@
 ﻿using GameReview.Builders.Impl;
+using GameReview.Infra.RabbitMq;
 using GameReview.Models;
 using GameReview.Repositories.Impl;
 using GameReview.Services.Exceptions;
@@ -7,11 +8,13 @@ namespace GameReview.Services.Impl;
 
 public class FollowService(FollowRepository repository,
     UserService userService,
-    FollowBuilder builder) : IFollowService
+    FollowBuilder builder,
+    RabbitMqProducer rabbitProducer) : IFollowService
 {
     private readonly FollowRepository _repository = repository;
     private readonly FollowBuilder _builder = builder;
     private readonly UserService _userService = userService;
+    private readonly RabbitMqProducer _rabbitProducer = rabbitProducer;
 
     public Follow FollowUser(string followerId, string followedId)
     {

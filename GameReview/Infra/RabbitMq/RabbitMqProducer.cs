@@ -37,7 +37,7 @@ public class RabbitMqProducer
         return this;
     }
 
-    public void Publish(string message, string routingKey)
+    private void Publish(string message, string routingKey)
     {
         var body = Encoding.UTF8.GetBytes(message);
 

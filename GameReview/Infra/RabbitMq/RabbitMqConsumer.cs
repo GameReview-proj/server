@@ -30,7 +30,7 @@ public class RabbitMqConsumer
             var notificationString = Encoding.UTF8.GetString(body);
             var notification = JsonSerializer.Deserialize<Notification>(notificationString);
 
-            await _hubContext.Clients.Group(notification.UserId).SendAsync("ReceiveNotification", notification);
+            await _hubContext.Clients.Group(notification.User.Id).SendAsync("ReceiveNotification", notification);
         };
         
         channel.BasicConsume(queue: "notifications", autoAck: true, consumer: consumer);
