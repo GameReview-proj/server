@@ -11,18 +11,20 @@ namespace GameReview.Infra.RabbitMq;
 public class RabbitMqConsumer
 {
     private readonly IHubContext<NotificationHub> _hubContext;
+    private readonly IConnection _connection;
+    private readonly IModel _channel;
 
     public RabbitMqConsumer(IHubContext<NotificationHub> hubContext)
     {
-        _hubContext = _hubContext;
+        _hubContext = hubContext;
 
         var factory = new ConnectionFactory() { HostName = "localhost" };
-        var connection = factory.CreateConnection();
-        using var channel = connection.CreateModel();
+        _connection = factory.CreateConnection();
+        _channel = _connection.CreateModel();
 
-        channel.QueueDeclare(queue: "notifications", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        _channel.QueueDeclare(queue: "notifications", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-        var consumer = new EventingBasicConsumer(channel);
+        var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += async (model, ea) =>
         {
             var body = ea.Body.ToArray();
@@ -31,7 +33,13 @@ public class RabbitMqConsumer
 
             await _hubContext.Clients.Group(notification.User.Id).SendAsync("ReceiveNotification", notification);
         };
-        
-        channel.BasicConsume(queue: "notifications", autoAck: true, consumer: consumer);
+
+        _channel.BasicConsume(queue: "notifications", autoAck: true, consumer: consumer);
+    }
+
+    public void Dispose()
+    {
+        _connection?.Close();
+        _channel?.Close();
     }
 }
