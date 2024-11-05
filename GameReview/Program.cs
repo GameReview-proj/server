@@ -57,6 +57,7 @@ builder.Services.AddScoped<UserBuilder>();
 builder.Services.AddScoped<ReviewBuilder>();
 builder.Services.AddScoped<FollowBuilder>();
 builder.Services.AddScoped<CommentaryBuilder>();
+builder.Services.AddScoped<NotificationBuilder>();
 
 // REPOSITORIES
 builder.Services.AddScoped<UserRepository>();

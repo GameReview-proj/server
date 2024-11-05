@@ -9,12 +9,14 @@ namespace GameReview.Services.Impl;
 public class FollowService(FollowRepository repository,
     UserService userService,
     FollowBuilder builder,
-    RabbitMqProducer rabbitProducer) : IFollowService
+    RabbitMqProducer rabbitProducer,
+    NotificationBuilder notificationBuilder) : IFollowService
 {
     private readonly FollowRepository _repository = repository;
     private readonly FollowBuilder _builder = builder;
     private readonly UserService _userService = userService;
     private readonly RabbitMqProducer _rabbitProducer = rabbitProducer;
+    private readonly NotificationBuilder _notificationBuilder = notificationBuilder;
 
     public Follow FollowUser(string followerId, string followedId)
     {
@@ -26,6 +28,13 @@ public class FollowService(FollowRepository repository,
             .Build();
 
         _repository.Add(newFollow);
+
+        var notification = _notificationBuilder
+            .SetUser(newFollow.Followed)
+            .SetFollow(newFollow)
+            .Build();
+
+        _rabbitProducer.PublishNotification(notification);
 
         return newFollow;
     }
