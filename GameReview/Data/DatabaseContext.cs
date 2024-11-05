@@ -11,6 +11,7 @@ public class DatabaseContext : IdentityDbContext<User>
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Commentary> Commentaries { get; set; }
     public DbSet<Follow> Follows { get; set; }
+    public DbSet<Vote> Votes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -23,16 +24,6 @@ public class DatabaseContext : IdentityDbContext<User>
             .HasOne(f => f.Follower)
             .WithMany(u => u.Following)
             .HasForeignKey(f => f.FollowerId);
-
-        builder.Entity<Notification>()
-            .HasOne(n => n.RelatedUser)
-            .WithMany(u => u.RelatedNotifications)
-            .HasForeignKey("RelatedUserId");
-
-        builder.Entity<Notification>()
-            .HasOne(n => n.User)
-            .WithMany(u => u.Notifications)
-            .HasForeignKey("UserId");
 
         base.OnModelCreating(builder);
     }

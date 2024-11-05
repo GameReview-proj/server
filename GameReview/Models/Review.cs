@@ -11,6 +11,7 @@ public class Review()
     public string ExternalId { get; set; }
     public DateTime CreatedDate { get; set; }
     public virtual User? User { get; set; }
-    public virtual List<Notification> Notifications { get; set; } = [];
-    public virtual IList<Commentary>? Commentaries { get; } = [];
+    public virtual List<Notification> Notifications { get; } = [];
+    public virtual List<Commentary>? Commentaries { get; } = [];
+    public virtual List<Vote>? Votes { get; } = [];
 }

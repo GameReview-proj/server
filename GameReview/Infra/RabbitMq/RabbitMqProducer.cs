@@ -1,4 +1,5 @@
-﻿using GameReview.Models;
+﻿using GameReview.DTOs.Notification;
+using GameReview.Models;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
@@ -30,14 +31,15 @@ public class RabbitMqProducer
     /// <param name="notification">Notificação a ser publicada</param>
     public RabbitMqProducer PublishNotification(Notification notification)
     {
-        var message = JsonSerializer.Serialize(notification);
+        var notificationDTO = new OutNotificationDTO(notification);
+        var message = JsonSerializer.Serialize(notificationDTO);
 
         Publish(message, "notifications");
 
         return this;
     }
 
-    public void Publish(string message, string routingKey)
+    private void Publish(string message, string routingKey)
     {
         var body = Encoding.UTF8.GetBytes(message);
 

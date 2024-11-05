@@ -12,4 +12,5 @@ public class Commentary
     public virtual Review? Review { get; set; }
     public virtual Commentary? LinkedCommentary { get; set; }
     public virtual List<Notification> Notifications { get; set; } = [];
+    public virtual List<Vote> Votes { get; } = [];
 }

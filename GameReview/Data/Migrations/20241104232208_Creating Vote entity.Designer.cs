@@ -4,6 +4,7 @@ using GameReview.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameReview.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20241104232208_Creating Vote entity")]
+    partial class CreatingVoteentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,6 +111,10 @@ namespace GameReview.Migrations
                     b.Property<bool>("Readed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RelatedUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("ReviewId")
                         .HasColumnType("int");
 
@@ -115,20 +122,17 @@ namespace GameReview.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("VoteId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CommentaryId");
 
                     b.HasIndex("FollowId");
 
+                    b.HasIndex("RelatedUserId");
+
                     b.HasIndex("ReviewId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("VoteId");
 
                     b.ToTable("Notification");
                 });
@@ -450,6 +454,12 @@ namespace GameReview.Migrations
                         .WithMany("Notifications")
                         .HasForeignKey("FollowId");
 
+                    b.HasOne("GameReview.Models.User", "RelatedUser")
+                        .WithMany("RelatedNotifications")
+                        .HasForeignKey("RelatedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GameReview.Models.Review", "Review")
                         .WithMany("Notifications")
                         .HasForeignKey("ReviewId");
@@ -460,19 +470,15 @@ namespace GameReview.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameReview.Models.Vote", "Vote")
-                        .WithMany()
-                        .HasForeignKey("VoteId");
-
                     b.Navigation("Commentary");
 
                     b.Navigation("Follow");
 
+                    b.Navigation("RelatedUser");
+
                     b.Navigation("Review");
 
                     b.Navigation("User");
-
-                    b.Navigation("Vote");
                 });
 
             modelBuilder.Entity("GameReview.Models.Review", b =>
@@ -578,6 +584,8 @@ namespace GameReview.Migrations
                     b.Navigation("Following");
 
                     b.Navigation("Notifications");
+
+                    b.Navigation("RelatedNotifications");
 
                     b.Navigation("Reviews");
                 });
