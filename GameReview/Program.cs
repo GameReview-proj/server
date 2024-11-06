@@ -44,16 +44,18 @@ builder.Services.AddDbContext<DatabaseContext>(opts =>
 // SERVICES
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<BlobService>();
-builder.Services.AddScoped<ReviewService>();
-builder.Services.AddScoped<CommentaryService>();
-builder.Services.AddScoped<FollowService>();
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<VoteService>();
 builder.Services.AddScoped<IGDBService>();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<ReviewService>();
+builder.Services.AddScoped<FollowService>();
 builder.Services.AddScoped<CachingService>();
+builder.Services.AddScoped<CommentaryService>();
 builder.Services.AddSingleton<IGDBTokenService>();
 
 // BUILDERS
 builder.Services.AddScoped<UserBuilder>();
+builder.Services.AddScoped<VoteBuilder>();
 builder.Services.AddScoped<ReviewBuilder>();
 builder.Services.AddScoped<FollowBuilder>();
 builder.Services.AddScoped<CommentaryBuilder>();
@@ -61,6 +63,7 @@ builder.Services.AddScoped<NotificationBuilder>();
 
 // REPOSITORIES
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<VoteRepository>();
 builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<FollowRepository>();
 builder.Services.AddScoped<CommentaryRepository>();
