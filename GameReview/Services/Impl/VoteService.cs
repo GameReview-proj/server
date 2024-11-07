@@ -62,6 +62,10 @@ public class VoteService(VoteRepository repository,
 
         return newVote;
     }
+    public Vote GetByLinkIdUserId(int? reviewId, int? commentaryId, string userId)
+    {
+        return _repository.GetByReviewIdCommentaryId(reviewId, commentaryId, userId) ?? throw new NotFoundException($"Voto não encontrado");
+    }
 
     public void Delete(int id)
     {

@@ -22,4 +22,16 @@ public class VoteController(VoteService service) : ControllerBase
 
         return Ok();
     }
+
+    [HttpDelete]
+    public IActionResult DeleteVote([FromQuery] int? reviewId, [FromQuery] int? commentaryId)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var voteFound = _service.GetByLinkIdUserId(reviewId, commentaryId, userId);
+
+        _service.Delete(voteFound.Id);
+
+        return NoContent();
+    }
 }
