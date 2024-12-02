@@ -10,4 +10,5 @@ public class Vote
     public DateTime CreatedDate { get; set; }
     public virtual Review? Review { get; set; }
     public virtual Commentary? Commentary { get; set; }
+    public virtual required User User { get; set; }
 }

@@ -16,7 +16,8 @@ public class GlobalExceptionFilter : IExceptionFilter
             _ => StatusCodes.Status500InternalServerError
         };
 
-        Console.WriteLine($"Exception {DateTime.Now} ({context.Exception.Message}) - {context.Exception.StackTrace}");
+        // UNCOMMENT TO HOMOLOG
+        // Console.WriteLine($"Exception {DateTime.Now} ({context.Exception.Message}) - {context.Exception.StackTrace}");
 
         context.Result = new ObjectResult(new
         {
