@@ -11,6 +11,7 @@ public class User : IdentityUser
     public virtual List<Follow>? Followers { get; set; } = [];
     public virtual List<Follow>? Following { get; set; } = [];
     public virtual List<Notification> Notifications { get; set; } = [];
+    public virtual List<Vote> Votes { get; set; } = [];
 
     public User() : base() { }
 }
